@@ -16,4 +16,39 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class CANConstants {
+    // CAN IDs of all devices in system
+    public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDER
+    public static final int DRIVETRAIN_FRONT_RIGHT = 2;
+    public static final int DRIVETRAIN_BACK_LEFT = 3;
+    public static final int DRIVETRAIN_BACK_RIGHT = 4;
+    public static final int STEER_FRONT_LEFT = 5; 
+    public static final int STEER_FRONT_RIGHT = 6;
+    public static final int STEER_BACK_LEFT = 7;
+    public static final int STEER_BACK_RIGHT = 8;
+  }
+
+  public static class MotorConstants {
+    public static final int CIM_CURRENT_LIMIT = 60;
+  }
+
+  public static class DriveConstants {
+    // Current limit for drivetrain motors. 60A is a reasonable maximum to reduce
+    // likelihood of tripping breakers or damaging CIM motors
+    public static final int DRIVE_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final double DRIVE_MOTOR_SPEED = 0;
+  }
+
+  public static class BallConstants {
+    // public static final int FEEDER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    // public static final int SHOOTER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+
+    // public static final double DEFAULT_INTAKING_FEEDER_SPEED = -1;
+    // public static final double DEFAULT_INTAKING_INTAKE_SPEED = 0.83;
+    // public static final double DEFAULT_SPINUP_FEEDER_SPEED = -0.5;
+    // public static final double DEFAULT_SHOOTING_FEEDER_SPEED = 0.75;
+    // public static final double DEFAULT_SHOOTING_SHOOTER_SPEED =0.88;
+    // public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+  }
 }
