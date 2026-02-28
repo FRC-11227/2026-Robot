@@ -1,16 +1,16 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.Follower;
+
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -31,6 +31,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     final Slot0Configs flywheelSlot0Configs = new Slot0Configs();
     final Slot0Configs feederSlot0Configs = new Slot0Configs();
+
+    final TalonFXConfiguration flywheelConfigs = new TalonFXConfiguration();
+    final TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
 
     public ShooterSubsystem() {
         // Check constants.java file to see the values provided
@@ -57,6 +60,28 @@ public class ShooterSubsystem extends SubsystemBase {
 
         m_leftFlywheelFeeder.getConfigurator().apply(feederSlot0Configs);
         m_rightFlywheelFeeder.getConfigurator().apply(feederSlot0Configs);
+
+        flywheelConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.FLYWHEEL_STATOR_CURRENT_LIMIT;
+        flywheelConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        flywheelConfigs.CurrentLimits.SupplyCurrentLimit = ShooterConstants.FLYWHEEL_SUPPLY_CURRENT_LIMIT;
+        flywheelConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        flywheelConfigs.Voltage.PeakForwardVoltage = 12;
+        flywheelConfigs.Voltage.PeakReverseVoltage = -12;
+
+        m_leftFlywheelLead.getConfigurator().apply(flywheelConfigs);
+        m_leftFlywheelFollow.getConfigurator().apply(flywheelConfigs);
+        m_rightFlywheelLead.getConfigurator().apply(flywheelConfigs);
+        m_rightFlywheelFollow.getConfigurator().apply(flywheelConfigs);
+
+        feederConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.FEEDER_STATOR_CURRENT_LIMIT;
+        feederConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        feederConfigs.CurrentLimits.SupplyCurrentLimit = ShooterConstants.FEEDER_SUPPLY_CURRENT_LIMIT;
+        feederConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        feederConfigs.Voltage.PeakForwardVoltage = 12;
+        feederConfigs.Voltage.PeakReverseVoltage = -12;
+
+        m_leftFlywheelFeeder.getConfigurator().apply(feederConfigs);
+        m_rightFlywheelFeeder.getConfigurator().apply(feederConfigs);
     }
 
     public Command spinFlywheel(DoubleSupplier speed) {
@@ -76,35 +101,5 @@ public class ShooterSubsystem extends SubsystemBase {
                 m_rightFlywheelFeeder.stopMotor();
                 m_leftFlywheelFeeder.stopMotor();
             });
-    }
-
-    /**
-     * Set motors to shoot and feed balls on left side. 
-     */
-    public void shootLeft() {
-        feederMotorLeft.set(SmartDashboard.getNumber("Feeder speed when feeding balls", ShootConstants.DEFAULT_FEEDER_SPEED));
-        shooterLeftLeader.set(SmartDashboard.getNumber("Shooter speed when shooting balls", ShootConstants.DEFAULT_SHOOTER_SPEED));
-    }
-
-    /**
-     * Set motors to shoot and feed balls on right side. 
-     */
-    public void shootRight() {
-        feederMotorRight.set(SmartDashboard.getNumber("Feeder speed when feeding balls", ShootConstants.DEFAULT_FEEDER_SPEED));
-        shooterRightLeader.set(SmartDashboard.getNumber("Shooter speed when shooting balls", ShootConstants.DEFAULT_SHOOTER_SPEED));
-    }
-
-    /**
-     * Command to run the shootLeft() method
-     */
-    public Command shootLeftCommand() {
-        return this.run(() -> shootLeft());
-    }
-
-    /**
-     * Command to run the shootRight() method
-     */
-    public Command shootRightCommand() {
-        return this.run(() -> shootRight());
     }
 }

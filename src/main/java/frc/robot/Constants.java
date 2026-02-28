@@ -13,9 +13,6 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
 
   public static class CAN {
     // CAN IDs of all devices in system
@@ -78,9 +75,10 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int FEEDER_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    public static final int SHOOTER_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    public static final int SHOOTER_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FEEDER_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FEEDER_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FLYWHEEL_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FLYWHEEL_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
 
     public static final double DEFAULT_FEEDER_SPEED = 0;
     public static final double DEFAULT_SHOOTER_SPEED = 0;
@@ -105,6 +103,7 @@ public final class Constants {
     public static final double DEFAULT_CLIMB_SPEED = 0;
     public static final double DEFAULT_FORK_SPEED = 0;
   }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
