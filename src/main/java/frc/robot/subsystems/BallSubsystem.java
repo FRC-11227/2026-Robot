@@ -85,12 +85,29 @@ public class BallSubsystem extends SubsystemBase {
         intakeRollingMotor.set(0);
     }
 
+    public Command setHopper() {
+        return this.run(() -> deployHopper());
+    }
+
+    public Command unsetHopper() {
+        return this.run(() -> retractHopper());
+    }
+
     /**
      * Command to run the deployIntake() method
      */
-    public Command startIntake() {
+    public Command setIntake() {
         return this.run(() -> deployIntake());
     }
+
+    public Command stopIntaking() {
+        return this.run(() -> stop());
+    }
+
+    public Command unsetIntake() {
+        return this.run(() -> retractIntake());
+    }
+
 
     /**
      * Sequence to shoot the ball. Runs the spinUpShooter() method for SPIN_UP_SECONDS,
