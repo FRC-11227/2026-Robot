@@ -371,16 +371,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
     public double limelight_aim_proportional() {    
-        double targetingAngularVelocity = aimController.calculate(LimelightHelpers.getTX("limelight"));
+        double targetingAngularVelocity = -aimController.calculate(LimelightHelpers.getTX("limelight"));
         targetingAngularVelocityPub.set(targetingAngularVelocity);
         return targetingAngularVelocity;
     }
-    public Command rotateToTarget() {
-        return applyRequest(() -> 
-            drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y (forward)
-                .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
-                .withRotationalRate(limelight_aim_proportional() * MaxAngularRate) // Drive counterclockwise with negative X (left));
-        );
-    }
+    // public Command rotateToTarget() {
+    //     return applyRequest(() -> 
+    //         drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y (forward)
+    //             .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
+    //             .withRotationalRate(limelight_aim_proportional() * MaxAngularRate) // Drive counterclockwise with negative X (left));
+    //     );
+    // }
 }
 

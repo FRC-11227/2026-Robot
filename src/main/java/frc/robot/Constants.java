@@ -47,7 +47,7 @@ public final class Constants {
     // likelihood of tripping breakers or damaging CIM motors
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final double DRIVE_MOTOR_SPEED = 0;
-    public static final double kTurnP = 0.05;
+    public static final double kTurnP = 0.01;
     public static final double kTurnI = 0;
     public static final double kTurnD = 0;
 
