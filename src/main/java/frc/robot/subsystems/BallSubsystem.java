@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.Follower;
@@ -147,10 +148,17 @@ public class BallSubsystem extends SubsystemBase {
     }
 
     /**
-     * Command to run the shoot() method
+     * Command to run the shootLeft() method
      */
     public Command shootLeftCommand() {
         return this.run(() -> shootLeft());
+    }
+
+    /**
+     * Command to run the shootRight() method
+     */
+    public Command shootRightCommand() {
+        return this.run(() -> shootRight());
     }
 
     /**

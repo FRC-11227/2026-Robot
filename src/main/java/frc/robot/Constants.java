@@ -73,7 +73,7 @@ public final class Constants {
     public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
     public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
     public static final double DEFAULT_FEEDER_SPEED = 0;
-    public static final double DEFAULT_SHOOTER_SPEED =0;
+    public static final double DEFAULT_SHOOTER_SPEED = 0;
     public static final double kShootP = 0.002;
     public static final double kShootI = 0;
     public static final double kShootD = 0;
