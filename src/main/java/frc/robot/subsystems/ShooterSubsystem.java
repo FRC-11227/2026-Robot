@@ -86,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getSpeed() {
-        double baseSpeed = 0;
+        double baseSpeed = 10;
         return baseSpeed / LimelightHelpers.getTA("limelight");
     }
 
