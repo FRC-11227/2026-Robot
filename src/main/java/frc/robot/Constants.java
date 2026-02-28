@@ -74,7 +74,7 @@ public final class Constants {
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
   }
 
-  public static class ShootConstants {
+  public static class ShooterConstants {
     public static final int FEEDER_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int SHOOTER_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int SHOOTER_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
