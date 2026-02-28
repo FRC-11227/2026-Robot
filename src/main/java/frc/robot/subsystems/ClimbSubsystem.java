@@ -12,15 +12,15 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.CANConstants;
+import frc.robot.Constants.CAN;
 
 public class ClimbSubsystem extends SubsystemBase {
     private final SparkMax climbMotor;
     private final TalonFX forkMotor;
 
     public ClimbSubsystem() {
-        climbMotor = new SparkMax(CANConstants.CLIMB, MotorType.kBrushless);
-        forkMotor = new TalonFX(CANConstants.FORK);
+        climbMotor = new SparkMax(CAN.CLIMB, MotorType.kBrushless);
+        forkMotor = new TalonFX(CAN.FORK);
 
         SparkMaxConfig climbConfig = new SparkMaxConfig();
         TalonFXConfiguration forkConfig = new TalonFXConfiguration();

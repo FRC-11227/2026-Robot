@@ -17,7 +17,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class CANConstants {
+  public static class CAN {
     // CAN IDs of all devices in system
     public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDERS
     public static final int DRIVETRAIN_FRONT_RIGHT = 2;
@@ -27,17 +27,20 @@ public final class Constants {
     public static final int STEER_FRONT_RIGHT = 6;
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
-    public static final int FEEDER_LEFT = 9;
-    public static final int FEEDER_RIGHT = 10;
-    public static final int SHOOTER_LEFT_LEADER = 11;
-    public static final int SHOOTER_LEFT_FOLLOWER = 12;
-    public static final int SHOOTER_RIGHT_LEADER = 13;
-    public static final int SHOOTER_RIGHT_FOLLOWER = 14;
-    public static final int HOPPER_DEPLOY = 15;
-    public static final int INTAKE_DEPLOY = 16;
-    public static final int INTAKE_ROLLING = 17;
-    public static final int CLIMB = 18;
-    public static final int FORK = 19;
+
+    public static final int HOPPER_DEPLOY = 9;
+    public static final int INTAKE_DEPLOY = 10;
+    public static final int INTAKE_ROLLING = 11;
+    public static final int CLIMB = 12;
+    public static final int FORK = 13;
+
+    public static final int leftFlywheelLead = 14;
+    public static final int leftFlywheelFollow = 15;
+    public static final int leftFLywheelFeeder = 16;
+
+    public static final int rightFlywheelLead = 17;
+    public static final int rightFlywheelFollow = 18;
+    public static final int rightFlywheelFeeder = 19;
   }
 
   public static class MotorConstants {
@@ -81,9 +84,18 @@ public final class Constants {
 
     public static final double DEFAULT_FEEDER_SPEED = 0;
     public static final double DEFAULT_SHOOTER_SPEED = 0;
-    public static final double kShootP = 0.002;
-    public static final double kShootI = 0;
-    public static final double kShootD = 0;
+
+    public static final double flywheel_kS = 0.1;
+    public static final double flywheel_kV = 0.12;
+    public static final double flywheel_kP = 0.11;
+    public static final double flywheel_kI = 0;
+    public static final double flywheel_kD = 0;
+
+    public static final double feeder_kS = 0;
+    public static final double feeder_kV = 0;
+    public static final double feeder_kP = 0.1;
+    public static final double feeder_kI = 0;
+    public static final double feeder_kD = 0;
   }
 
   public static class ClimbConstants {
@@ -93,4 +105,9 @@ public final class Constants {
     public static final double DEFAULT_CLIMB_SPEED = 0;
     public static final double DEFAULT_FORK_SPEED = 0;
   }
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
+  }
+
 }

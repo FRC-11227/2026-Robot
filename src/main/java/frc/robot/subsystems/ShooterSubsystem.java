@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.CANConstants;
+import frc.robot.Constants.CAN;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");

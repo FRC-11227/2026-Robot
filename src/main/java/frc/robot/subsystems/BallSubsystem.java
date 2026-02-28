@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallConstants;
-import frc.robot.Constants.CANConstants;
+import frc.robot.Constants.CAN;
 
 public class BallSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
@@ -21,9 +21,9 @@ public class BallSubsystem extends SubsystemBase {
     
     /** Create a new BallSubsystem */
     public BallSubsystem() {
-        intakeDeployMotor = new SparkMax(CANConstants.INTAKE_DEPLOY, MotorType.kBrushless);
-        intakeRollingMotor = new SparkMax(CANConstants.INTAKE_ROLLING, MotorType.kBrushless);
-        hopperDeployMotor = new SparkMax(CANConstants.HOPPER_DEPLOY, MotorType.kBrushless);
+        intakeDeployMotor = new SparkMax(CAN.INTAKE_DEPLOY, MotorType.kBrushless);
+        intakeRollingMotor = new SparkMax(CAN.INTAKE_ROLLING, MotorType.kBrushless);
+        hopperDeployMotor = new SparkMax(CAN.HOPPER_DEPLOY, MotorType.kBrushless);
 
         SparkMaxConfig intakeDeployConfig = new SparkMaxConfig();
         SparkMaxConfig intakeRollingConfig = new SparkMaxConfig();
