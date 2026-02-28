@@ -27,12 +27,12 @@ public final class Constants {
     public static final int STEER_FRONT_RIGHT = 6;
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
-    public static final int CONVEYOR_LEFT = 9;
-    public static final int CONVEYOR_RIGHT = 10;
-    public static final int SHOOTER_1 = 11;
-    public static final int SHOOTER_2 = 12;
-    public static final int SHOOTER_3 = 13;
-    public static final int SHOOTER_4 = 14;
+    public static final int FEEDER_LEFT = 9;
+    public static final int FEEDER_RIGHT = 10;
+    public static final int SHOOTER_LEFT_LEADER = 11;
+    public static final int SHOOTER_LEFT_FOLLOWER = 12;
+    public static final int SHOOTER_RIGHT_LEADER = 13;
+    public static final int SHOOTER_RIGHT_FOLLOWER = 14;
     public static final int HOPPER_DEPLOY = 15;
     public static final int INTAKE_DEPLOY = 16;
     public static final int INTAKE_ROLLING = 17;
@@ -62,14 +62,21 @@ public final class Constants {
   }
 
   public static class BallConstants {
+    public static final int INTAKE_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    public static final int SHOOTER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int HOPPER_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FEEDER_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int SHOOTER_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int SHOOTER_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
 
-    public static final double DEFAULT_INTAKING_ROLLER_SPEED = -1;
-    public static final double DEFAULT_INTAKING_INTAKE_SPEED = 0.83;
-    public static final double DEFAULT_SPINUP_FEEDER_SPEED = -0.5;
-    public static final double DEFAULT_SHOOTING_FEEDER_SPEED = 0.75;
-    public static final double DEFAULT_SHOOTING_SHOOTER_SPEED =0.88;
+    public static final double DEFAULT_INTAKE_ROLLER_SPEED = 0;
+    public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
+    public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
+    public static final double DEFAULT_FEEDER_SPEED = 0;
+    public static final double DEFAULT_SHOOTER_SPEED =0;
+    public static final double kShootP = 0.002;
+    public static final double kShootI = 0;
+    public static final double kShootD = 0;
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
   }
 }
