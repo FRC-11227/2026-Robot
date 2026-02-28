@@ -1,10 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkMax;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -22,23 +18,20 @@ public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX shooterLeftFollower;
     private final TalonFX shooterRightLeader;
     private final TalonFX shooterRightFollower;
-    private final SparkMax feederMotorLeft;
-    private final SparkMax feederMotorRight;
+    private final TalonFX feederMotorLeft;
+    private final TalonFX feederMotorRight;
 
     public ShooterSubsystem() {
         shooterLeftLeader  = new TalonFX(CANConstants.SHOOTER_LEFT_LEADER);
         shooterLeftFollower = new TalonFX(CANConstants.SHOOTER_LEFT_FOLLOWER);
         shooterRightLeader  = new TalonFX(CANConstants.SHOOTER_RIGHT_LEADER);
         shooterRightFollower = new TalonFX(CANConstants.SHOOTER_RIGHT_FOLLOWER);
-        feederMotorLeft = new SparkMax(CANConstants.FEEDER_LEFT, MotorType.kBrushless);
-        feederMotorRight = new SparkMax(CANConstants.FEEDER_RIGHT, MotorType.kBrushless);
+        feederMotorLeft = new TalonFX(CANConstants.FEEDER_LEFT);
+        feederMotorRight = new TalonFX(CANConstants.FEEDER_RIGHT);
 
-        SparkMaxConfig feederConfig = new SparkMaxConfig();
+        TalonFXConfiguration feederConfig = new TalonFXConfiguration();
         TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
 
-        feederConfig
-            .smartCurrentLimit(ShootConstants.FEEDER_CURRENT_LIMIT)
-            .voltageCompensation(12);
         shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         shooterConfig.CurrentLimits.SupplyCurrentLimit = ShootConstants.SHOOTER_SUPPLY_CURRENT_LIMIT;
         shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -50,8 +43,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterConfig.Slot0.kI = ShootConstants.kShootI;
         shooterConfig.Slot0.kD = ShootConstants.kShootD;
 
-        feederMotorLeft.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        feederMotorRight.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         shooterLeftLeader.getConfigurator().apply(shooterConfig);
         shooterRightLeader.getConfigurator().apply(shooterConfig);
         shooterLeftFollower.setControl(new Follower(shooterLeftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
