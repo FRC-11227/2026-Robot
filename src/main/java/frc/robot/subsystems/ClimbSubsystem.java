@@ -52,10 +52,17 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     /**
+     *  reverse climb motor
+     */
+    public void reverseClimb() {
+        climbMotor.set(-1 * SmartDashboard.getNumber("Climber speed when climbing", ClimbConstants.DEFAULT_CLIMB_SPEED));
+    }
+
+    /**
      *  stop climb motor
      */
     public void stopClimb() {
-        climbMotor.set(-1 * SmartDashboard.getNumber("Climber speed when climbing", ClimbConstants.DEFAULT_CLIMB_SPEED));
+        climbMotor.set(0);
     }
 
     /**
@@ -71,4 +78,6 @@ public class ClimbSubsystem extends SubsystemBase {
     public void pullFork() {
         forkMotor.set(-1 * SmartDashboard.getNumber("Fork speed when forking", ClimbConstants.DEFAULT_FORK_SPEED));
     }
+
+    
 }
