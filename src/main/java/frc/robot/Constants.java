@@ -27,6 +27,15 @@ public final class Constants {
     public static final int STEER_FRONT_RIGHT = 6;
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
+    public static final int CONVEYOR_LEFT = 9;
+    public static final int CONVEYOR_RIGHT = 10;
+    public static final int SHOOTER_1 = 11;
+    public static final int SHOOTER_2 = 12;
+    public static final int SHOOTER_3 = 13;
+    public static final int SHOOTER_4 = 14;
+    public static final int HOPPER_DEPLOY = 15;
+    public static final int INTAKE_DEPLOY = 16;
+    public static final int INTAKE_ROLLING = 17;
   }
 
   public static class MotorConstants {
@@ -38,17 +47,29 @@ public final class Constants {
     // likelihood of tripping breakers or damaging CIM motors
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final double DRIVE_MOTOR_SPEED = 0;
+    public static final double kTurnP = 0.05;
+    public static final double kTurnI = 0;
+    public static final double kTurnD = 0;
+
+    public static final double kTurnToleranceDeg = 5;
+    public static final double kTurnRateToleranceDegPerS = 10;
+    public static final double kMaxTurnRateDegPerS = 100;
+    public static final double kMaxTurnAccelerationDegPerSSquared = 300;
+
+    public static final double ksVolts = 1;
+    public static final double kvVoltSecondsPerDegree = 0.8;
+    public static final double kaVoltSecondsSquaredPerDegree = 0.15;
   }
 
   public static class BallConstants {
-    // public static final int FEEDER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    // public static final int SHOOTER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int SHOOTER_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
 
-    // public static final double DEFAULT_INTAKING_FEEDER_SPEED = -1;
-    // public static final double DEFAULT_INTAKING_INTAKE_SPEED = 0.83;
-    // public static final double DEFAULT_SPINUP_FEEDER_SPEED = -0.5;
-    // public static final double DEFAULT_SHOOTING_FEEDER_SPEED = 0.75;
-    // public static final double DEFAULT_SHOOTING_SHOOTER_SPEED =0.88;
-    // public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+    public static final double DEFAULT_INTAKING_ROLLER_SPEED = -1;
+    public static final double DEFAULT_INTAKING_INTAKE_SPEED = 0.83;
+    public static final double DEFAULT_SPINUP_FEEDER_SPEED = -0.5;
+    public static final double DEFAULT_SHOOTING_FEEDER_SPEED = 0.75;
+    public static final double DEFAULT_SHOOTING_SHOOTER_SPEED =0.88;
+    public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
   }
 }

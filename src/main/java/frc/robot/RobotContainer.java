@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -76,6 +76,11 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        joystick.y().whileTrue(drivetrain.applyRequest(() -> 
+            drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y (forward)
+                .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
+                .withRotationalRate(drivetrain.limelight_aim_proportional() * MaxAngularRate) // Drive counterclockwise with negative X (left));
+        ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -92,7 +97,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
+        return Autos.exampleAuto(null);
 
         // // Simple drive forward auton
         // final var idle = new SwerveRequest.Idle();

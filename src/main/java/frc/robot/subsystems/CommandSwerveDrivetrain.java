@@ -4,10 +4,14 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,11 +20,13 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -28,8 +34,12 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import edu.wpi.first.math.controller.PIDController;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import pabeles.concurrency.IntOperatorTask.Max;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -57,6 +67,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    private static PIDController aimController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+
+    // when the robot program starts
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    // Get the table within that instance that contains the data. There can
+    // be as many tables as you like and exist to make it easier to organize
+    // your data. In this case, it's a table called datatable.
+    NetworkTable table = inst.getTable("datatable");
+    // Start publishing topics within that table that correspond to the X and Y values
+    // for some operation in your program.
+    // The topic names are actually "/datatable/x" and "/datatable/y".
+    DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
+
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -340,4 +370,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
+    public double limelight_aim_proportional() {    
+        double targetingAngularVelocity = aimController.calculate(LimelightHelpers.getTX("limelight"));
+        targetingAngularVelocityPub.set(targetingAngularVelocity);
+        return targetingAngularVelocity;
+    }
+    public Command rotateToTarget() {
+        return applyRequest(() -> 
+            drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y (forward)
+                .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
+                .withRotationalRate(limelight_aim_proportional() * MaxAngularRate) // Drive counterclockwise with negative X (left));
+        );
+    }
 }
+
