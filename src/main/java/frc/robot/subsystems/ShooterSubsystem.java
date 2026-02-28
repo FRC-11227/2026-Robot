@@ -32,16 +32,21 @@ public class ShooterSubsystem extends SubsystemBase {
     final Slot0Configs feederSlot0Configs = new Slot0Configs();
 
     public ShooterSubsystem() {
-        flywheelSlot0Configs.kS = ShooterConstants.flywheel_kS;
-        flywheelSlot0Configs.kV = ShooterConstants.flywheel_kV;
-        flywheelSlot0Configs.kP = ShooterConstants.flywheel_kP;
-        flywheelSlot0Configs.kI = ShooterConstants.flywheel_kI;
-        flywheelSlot0Configs.kD = ShooterConstants.flywheel_kD;
+        // Check constants.java file to see the values provided
+        flywheelSlot0Configs.kS = ShooterConstants.flywheel_kS; // Add 0.1 V output to overcome static friction
+        flywheelSlot0Configs.kV = ShooterConstants.flywheel_kV; // A velocity target of 1 rps results in 0.12 V output
+        flywheelSlot0Configs.kP = ShooterConstants.flywheel_kP; // An error of 1 rps results in 0.11 V output
+        flywheelSlot0Configs.kI = ShooterConstants.flywheel_kI; // no output for integrated error
+        flywheelSlot0Configs.kD = ShooterConstants.flywheel_kD; // no output for error derivative
 
         m_leftFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
         m_leftFlywheelFollow.getConfigurator().apply(flywheelSlot0Configs);
         m_rightFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
         m_rightFlywheelFollow.getConfigurator().apply(flywheelSlot0Configs);
+
+        // set follow flywheels to follow their leader motors
+        m_rightFlywheelFollow.setControl(new Follower(m_rightFlywheelLead.getDeviceID(), MotorAlignmentValue.Aligned));
+        m_leftFlywheelFollow.setControl(new Follower(m_leftFlywheelLead.getDeviceID(), MotorAlignmentValue.Aligned));
 
         feederSlot0Configs.kS = ShooterConstants.feeder_kS;
         feederSlot0Configs.kV = ShooterConstants.feeder_kV;

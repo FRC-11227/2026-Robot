@@ -29,9 +29,9 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final double flywheel_kS = 0;
-    public static final double flywheel_kV = 0;
-    public static final double flywheel_kP = 0.1;
+    public static final double flywheel_kS = 0.1;
+    public static final double flywheel_kV = 0.12;
+    public static final double flywheel_kP = 0.11;
     public static final double flywheel_kI = 0;
     public static final double flywheel_kD = 0;
 
