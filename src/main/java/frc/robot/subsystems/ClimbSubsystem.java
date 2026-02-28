@@ -9,7 +9,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.CAN;
@@ -79,5 +81,30 @@ public class ClimbSubsystem extends SubsystemBase {
         forkMotor.set(-1 * SmartDashboard.getNumber("Fork speed when forking", ClimbConstants.DEFAULT_FORK_SPEED));
     }
 
-    
+    public Command climbOne() {
+        return this.runEnd(() -> startClimb(), () -> stopClimb());
+    }
+
+    public Command climbTwo() {
+        return this.runEnd(() -> {
+            pushFork();
+            Timer.delay(1.0); 
+            startClimb();
+        },
+        () -> {
+            stopClimb();
+            pullFork();
+        }
+        );
+    }
+
+    public Command climbThree() {
+        return this.runEnd(() -> {
+            startClimb();
+        },
+        () -> {
+            stopClimb();
+        }
+        );
+    }
 }
