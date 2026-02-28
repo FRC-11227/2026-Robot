@@ -102,4 +102,30 @@ public class ShooterSubsystem extends SubsystemBase {
                 m_leftFlywheelFeeder.stopMotor();
             });
     }
+
+    public Command shootLeft(Double speed) {
+        return this.runEnd(
+            () -> {
+                m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+                m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+            },
+            () -> {
+                m_leftFlywheelLead.stopMotor();
+                m_leftFlywheelFeeder.stopMotor();
+            }
+        );
+    }
+
+    public Command shootRight(Double speed) {
+        return this.runEnd(
+            () -> {
+                m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+                m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+            },
+            () -> {
+                m_rightFlywheelLead.stopMotor();
+                m_rightFlywheelFeeder.stopMotor();
+            }
+        );
+    }
 }
