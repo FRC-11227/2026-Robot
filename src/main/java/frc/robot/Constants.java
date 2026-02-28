@@ -36,6 +36,8 @@ public final class Constants {
     public static final int HOPPER_DEPLOY = 15;
     public static final int INTAKE_DEPLOY = 16;
     public static final int INTAKE_ROLLING = 17;
+    public static final int CLIMB = 18;
+    public static final int FORK = 19;
   }
 
   public static class MotorConstants {
@@ -78,5 +80,13 @@ public final class Constants {
     public static final double kShootI = 0;
     public static final double kShootD = 0;
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+  }
+
+  public static class ClimbConstants {
+    public static final int CLIMB_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FORK_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FORK_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final double DEFAULT_CLIMB_SPEED = 0;
+    public static final double DEFAULT_FORK_SPEED = 0;
   }
 }
