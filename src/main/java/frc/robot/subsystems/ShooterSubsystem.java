@@ -5,6 +5,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 
+import frc.robot.LimelightHelpers;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
@@ -84,6 +85,11 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightFlywheelFeeder.getConfigurator().apply(feederConfigs);
     }
 
+    public double getSpeed() {
+        double baseSpeed = 0;
+        return baseSpeed / LimelightHelpers.getTA("limelight");
+    }
+
     public Command spinFlywheel(DoubleSupplier speed) {
         return this.runEnd(
             () -> {
@@ -103,11 +109,11 @@ public class ShooterSubsystem extends SubsystemBase {
             });
     }
 
-    public Command shootLeft(Double speed) {
+    public Command shootLeft() {
         return this.runEnd(
             () -> {
-                m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
-                m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+                m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
             },
             () -> {
                 m_leftFlywheelLead.stopMotor();
@@ -116,11 +122,11 @@ public class ShooterSubsystem extends SubsystemBase {
         );
     }
 
-    public Command shootRight(Double speed) {
+    public Command shootRight() {
         return this.runEnd(
             () -> {
-                m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
-                m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(speed).withFeedForward(0.5));
+                m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
             },
             () -> {
                 m_rightFlywheelLead.stopMotor();
