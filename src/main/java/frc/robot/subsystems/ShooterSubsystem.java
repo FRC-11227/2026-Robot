@@ -36,6 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFXConfiguration flywheelConfigs = new TalonFXConfiguration();
     final TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
 
+
     public ShooterSubsystem() {
         // Check constants.java file to see the values provided
         flywheelSlot0Configs.kS = ShooterConstants.flywheel_kS; // Add 0.1 V output to overcome static friction
@@ -110,10 +111,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command shootLeft() {
+        double motorVelocity = m_leftFlywheelLead.getVelocity().getValueAsDouble();
+        double targetVelocity = 0;
         return this.runEnd(
             () -> {
                 m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
-                m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                if (motorVelocity > targetVelocity) {
+                    m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                }
             },
             () -> {
                 m_leftFlywheelLead.stopMotor();
@@ -123,10 +128,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command shootRight() {
+        double motorVelocity = m_rightFlywheelLead.getVelocity().getValueAsDouble();
+        double targetVelocity = 0;
         return this.runEnd(
             () -> {
                 m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
-                m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                if (motorVelocity > targetVelocity) {
+                    m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                }
             },
             () -> {
                 m_rightFlywheelLead.stopMotor();
