@@ -108,6 +108,7 @@ public class BallSubsystem extends SubsystemBase {
      */
     public void deployIntake() {
         intakeDeployMotor.set(SmartDashboard.getNumber("Intake deploy speed when deploying intake", BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED));
+        intakeRollingMotor.set(SmartDashboard.getNumber("Roller speed when intaking", BallConstants.DEFAULT_INTAKE_ROLLER_SPEED));
     }
 
     /**
@@ -115,20 +116,7 @@ public class BallSubsystem extends SubsystemBase {
      */
     public void retractIntake() {
         intakeDeployMotor.set(-1 * SmartDashboard.getNumber("Intake deploy speed when deploying intake", BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED));
-    }
-
-    /**
-     *  Set rollers to intake balls
-     */
-    public void intake() {
-        intakeRollingMotor.set(SmartDashboard.getNumber("Roller speed when intaking", BallConstants.DEFAULT_INTAKE_ROLLER_SPEED));
-    }
-
-    /** 
-     * Set rollers to eject balls. Exactly backwards from intaking speeds
-     */
-    public void eject() {
-        intakeRollingMotor.set(-1 * SmartDashboard.getNumber("Roller speed when intaking", BallConstants.DEFAULT_INTAKE_ROLLER_SPEED));
+        intakeRollingMotor.set(0);
     }
 
     /**
