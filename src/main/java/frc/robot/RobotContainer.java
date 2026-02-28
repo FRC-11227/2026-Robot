@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -77,9 +76,9 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
         joystick.y().whileTrue(drivetrain.applyRequest(() -> 
-            drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y (forward)
-                .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
-                .withRotationalRate(drivetrain.limelight_aim_proportional() * MaxAngularRate) // Drive counterclockwise with negative X (left));
+            drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
+                .withVelocityY(0 * MaxSpeed / 3) 
+                .withRotationalRate(drivetrain.limelight_aim_proportional() * MaxAngularRate) // turn toward target
         ));
 
         // Run SysId routines when holding back/start and X/Y.

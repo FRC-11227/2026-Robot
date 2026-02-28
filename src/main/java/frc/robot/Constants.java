@@ -19,7 +19,7 @@ public final class Constants {
 
   public static class CANConstants {
     // CAN IDs of all devices in system
-    public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDER
+    public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDERS
     public static final int DRIVETRAIN_FRONT_RIGHT = 2;
     public static final int DRIVETRAIN_BACK_LEFT = 3;
     public static final int DRIVETRAIN_BACK_RIGHT = 4;
