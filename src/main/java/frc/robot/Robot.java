@@ -17,8 +17,13 @@ public class Robot extends TimedRobot {
 
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
+<<<<<<< HEAD
             .withTimestampReplay()
             .withJoystickReplay();
+=======
+        .withTimestampReplay()
+        .withJoystickReplay();
+>>>>>>> main
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -27,6 +32,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
+<<<<<<< HEAD
         CommandScheduler.getInstance().run();
     }
 
@@ -41,6 +47,19 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledExit() {
     }
+=======
+        CommandScheduler.getInstance().run(); 
+    }
+
+    @Override
+    public void disabledInit() {}
+
+    @Override
+    public void disabledPeriodic() {}
+
+    @Override
+    public void disabledExit() {}
+>>>>>>> main
 
     @Override
     public void autonomousInit() {
@@ -52,12 +71,19 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+<<<<<<< HEAD
     public void autonomousPeriodic() {
     }
 
     @Override
     public void autonomousExit() {
     }
+=======
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void autonomousExit() {}
+>>>>>>> main
 
     @Override
     public void teleopInit() {
@@ -67,12 +93,19 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+<<<<<<< HEAD
     public void teleopPeriodic() {
     }
 
     @Override
     public void teleopExit() {
     }
+=======
+    public void teleopPeriodic() {}
+
+    @Override
+    public void teleopExit() {}
+>>>>>>> main
 
     @Override
     public void testInit() {
@@ -80,6 +113,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+<<<<<<< HEAD
     public void testPeriodic() {
     }
 
@@ -90,4 +124,13 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {
     }
+=======
+    public void testPeriodic() {}
+
+    @Override
+    public void testExit() {}
+
+    @Override
+    public void simulationPeriodic() {}
+>>>>>>> main
 }
