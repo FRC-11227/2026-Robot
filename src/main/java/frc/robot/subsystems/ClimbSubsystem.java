@@ -93,7 +93,6 @@ public class ClimbSubsystem extends SubsystemBase {
         },
         () -> {
             stopClimb();
-            pullFork();
         }
         );
     }
