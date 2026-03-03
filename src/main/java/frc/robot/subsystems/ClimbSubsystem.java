@@ -106,4 +106,14 @@ public class ClimbSubsystem extends SubsystemBase {
         }
         );
     }
+
+    public Command getDown() {
+        return this.runEnd(() -> {
+            reverseClimb();
+        },
+        () -> {
+            stopClimb();
+        }
+        );
+    }
 }
