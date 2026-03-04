@@ -40,8 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFXConfiguration flywheelConfigs = new TalonFXConfiguration();
     final TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
 
-    InterpolatingDoubleTreeMap shooterTable = new InterpolatingDoubleTreeMap();
-    List<Double> shooterDistList = new ArrayList<>(Arrays.asList(3.0, 7.0, 10.0, 15.0, 20.0));
+    static InterpolatingDoubleTreeMap shooterTable = new InterpolatingDoubleTreeMap();
+    static List<Double> shooterDistList = new ArrayList<>(Arrays.asList(3.0, 7.0, 10.0, 15.0, 20.0));
 
     public ShooterSubsystem() {
         // Check constants.java file to see the values provided
@@ -91,11 +91,11 @@ public class ShooterSubsystem extends SubsystemBase {
         m_leftFlywheelFeeder.getConfigurator().apply(feederConfigs);
         m_rightFlywheelFeeder.getConfigurator().apply(feederConfigs);
 
-        shooterTable.put(shooterDistList.get(0), 1.0);
-        shooterTable.put(shooterDistList.get(1), 2.0);
+        shooterTable.put(shooterDistList.get(0), 10.0);
+        shooterTable.put(shooterDistList.get(1), 30.0);
     }
 
-    public ArrayList<Double> findFloorCeil(double distance) {
+    public static ArrayList<Double> findFloorCeil(double distance) {
         ArrayList<Double> results = new ArrayList<>();
         int index = Collections.binarySearch(shooterDistList, distance);
         double floorValue = 0.0;
@@ -119,9 +119,9 @@ public class ShooterSubsystem extends SubsystemBase {
         return results;
     }
 
-    public double getVelocity(double distance) {
+    public static double getVelocity(double distance) {
         ArrayList<Double> results = findFloorCeil(distance);
-        double percent = (distance - results.get(0)) / (results.get(1) - results.get(0));
+        double percent = (results.get(1) - results.get(0)) == 0 ? 0 : (distance - results.get(0)) / (results.get(1) - results.get(0));
         double valueBetween = shooterTable.get(results.get(1)) - shooterTable.get(results.get(0));
         return results.get(0) + valueBetween * percent;
     }
