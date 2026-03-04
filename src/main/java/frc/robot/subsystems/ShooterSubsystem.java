@@ -5,13 +5,17 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 
-import frc.robot.LimelightHelpers;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -36,6 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFXConfiguration flywheelConfigs = new TalonFXConfiguration();
     final TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
 
+    InterpolatingDoubleTreeMap shooterTable = new InterpolatingDoubleTreeMap();
+    List<Double> shooterDistList = new ArrayList<>(Arrays.asList(3.0, 7.0, 10.0, 15.0, 20.0));
 
     public ShooterSubsystem() {
         // Check constants.java file to see the values provided
@@ -84,11 +90,46 @@ public class ShooterSubsystem extends SubsystemBase {
 
         m_leftFlywheelFeeder.getConfigurator().apply(feederConfigs);
         m_rightFlywheelFeeder.getConfigurator().apply(feederConfigs);
+
+        shooterTable.put(shooterDistList.get(0), 1.0);
+        shooterTable.put(shooterDistList.get(1), 2.0);
+    }
+
+    public ArrayList<Double> findFloorCeil(double distance) {
+        ArrayList<Double> results = new ArrayList<>();
+        int index = Collections.binarySearch(shooterDistList, distance);
+        double floorValue = 0.0;
+        double ceilingValue = 0.0;
+
+        if (index >= 0) {
+            floorValue = shooterDistList.get(index);
+            ceilingValue = shooterDistList.get(index);
+        } else {
+            int insertionPoint = -index - 1;
+
+            if (insertionPoint > 0) {
+                floorValue = shooterDistList.get(insertionPoint - 1);
+            }
+            if (insertionPoint < shooterDistList.size()) {
+                ceilingValue = shooterDistList.get(insertionPoint);
+            }
+        }
+        results.add(floorValue);
+        results.add(ceilingValue);
+        return results;
+    }
+
+    public double getVelocity(double distance) {
+        ArrayList<Double> results = findFloorCeil(distance);
+        double percent = (distance - results.get(0)) / (results.get(1) - results.get(0));
+        double valueBetween = shooterTable.get(results.get(1)) - shooterTable.get(results.get(0));
+        return results.get(0) + valueBetween * percent;
     }
 
     public double getSpeed() {
-        double baseSpeed = 10;
-        return baseSpeed / LimelightHelpers.getTA("limelight");
+        
+        return 0.0;
+        
     }
 
     public Command spinFlywheel(DoubleSupplier speed) {
