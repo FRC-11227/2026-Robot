@@ -126,12 +126,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return results.get(0) + valueBetween * percent;
     }
 
-    public double getSpeed() {
-        
-        return 0.0;
-        
-    }
-
     public Command spinFlywheel(DoubleSupplier speed) {
         return this.runEnd(
             () -> {
@@ -156,7 +150,7 @@ public class ShooterSubsystem extends SubsystemBase {
         double targetVelocity = 0;
         return this.runEnd(
             () -> {
-                m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
                 if (motorVelocity > targetVelocity) {
                     m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
                 }
@@ -173,7 +167,7 @@ public class ShooterSubsystem extends SubsystemBase {
         double targetVelocity = 0;
         return this.runEnd(
             () -> {
-                m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(getSpeed()).withFeedForward(0.5));
+                m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(0).withFeedForward(0.5));
                 if (motorVelocity > targetVelocity) {
                     m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
                 }
