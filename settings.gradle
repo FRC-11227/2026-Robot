@@ -20,13 +20,8 @@ pluginManagement {
         }
         def frcHomeMaven = new File(frcHome, 'maven')
         maven {
-<<<<<<< HEAD
-            name = 'frcHome'
-            url = frcHomeMaven
-=======
-            name 'frcHome'
+            name 'frcHome' 
             url frcHomeMaven
->>>>>>> main
         }
     }
 }
