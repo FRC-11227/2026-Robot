@@ -26,6 +26,15 @@ public final class Constants {
     public static final int rightFlywheelLead = 17;
     public static final int rightFlywheelFollow = 18;
     public static final int rightFlywheelFeeder = 19;
+
+    public static final int intakeMotor = 20;
+    public static final int intakeMotorAngle = 21;
+  }
+
+  public static class intakeConstants {
+    public static final double intakeP = 0;
+    public static final double intakeI = 0;
+    public static final double intakeD = 0;
   }
 
   public static class ShooterConstants {
