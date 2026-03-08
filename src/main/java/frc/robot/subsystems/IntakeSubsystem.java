@@ -16,7 +16,7 @@ import frc.robot.Constants.CAN;
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
     private final SparkMax intakeRollingMotor;
-    private SparkClosedLoopController deployIntakeController = new SparkClosedLoopController();
+    private SparkClosedLoopController deployIntakeController;
     private Boolean isDeployed;
     
     /** Create a new IntakeSubsystem */
@@ -24,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         isDeployed = false;
         intakeDeployMotor = new SparkMax(CAN.INTAKE_DEPLOY, MotorType.kBrushless);
         intakeRollingMotor = new SparkMax(CAN.INTAKE_ROLLING, MotorType.kBrushless);
+        deployIntakeController = new SparkClosedLoopController();
 
         SparkMaxConfig intakeDeployConfig = new SparkMaxConfig();
         SparkMaxConfig intakeRollingConfig = new SparkMaxConfig();
