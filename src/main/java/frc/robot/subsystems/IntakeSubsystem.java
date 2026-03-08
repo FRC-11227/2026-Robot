@@ -15,10 +15,11 @@ import frc.robot.Constants.CAN;
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
     private final SparkMax intakeRollingMotor;
-    
+    private Boolean isDeployed;
     
     /** Create a new IntakeSubsystem */
     public IntakeSubsystem() {
+        isDeployed = false;
         intakeDeployMotor = new SparkMax(CAN.INTAKE_DEPLOY, MotorType.kBrushless);
         intakeRollingMotor = new SparkMax(CAN.INTAKE_ROLLING, MotorType.kBrushless);
 
@@ -65,16 +66,16 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
      * Command to run the deployIntake() method
      */
-    public Command pushIntake() {
+    public Command pushPullIntake() {
+        if (isDeployed) {
+            isDeployed = false;
+            return this.runEnd(() -> retractIntake(), () -> stopIntake());
+        }
+        isDeployed = true;
         return this.runEnd(() -> {
             deployIntake();
             Timer.delay(1);
         }, () -> stopIntake());
-    }
-
-
-    public Command pullIntake() {
-        return this.runEnd(() -> retractIntake(), () -> stopIntake());
     }
 
     public Command roll() {
