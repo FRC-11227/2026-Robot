@@ -5,6 +5,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,7 @@ import frc.robot.Constants.CAN;
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
     private final SparkMax intakeRollingMotor;
+    private SparkClosedLoopController deployIntakeController = new SparkClosedLoopController();
     private Boolean isDeployed;
     
     /** Create a new IntakeSubsystem */
