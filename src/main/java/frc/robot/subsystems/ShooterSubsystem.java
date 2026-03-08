@@ -75,6 +75,22 @@ public class ShooterSubsystem extends SubsystemBase {
         flywheelSpeedPub = flywheelVelocity.publish();
     }
 
+    public static double getDistance() {
+        double ty = LimelightHelpers.getTY("limelight");
+        double limelightSightHeight = goalHeightIn - limelightHeightIn;
+        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
+        distancePub.set(dist);
+        return dist;
+    }
+
+    public static double getDistance() {
+        double ty = LimelightHelpers.getTY("limelight");
+        double limelightSightHeight = goalHeightIn - limelightHeightIn;
+        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
+        distancePub.set(dist);
+        return dist;
+    }
+
     public Command spinFlywheel(double speed) {
         return this.runEnd(
             () -> {
