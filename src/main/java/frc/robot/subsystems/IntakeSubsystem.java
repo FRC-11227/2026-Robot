@@ -8,14 +8,13 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.BallConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.CAN;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
     private final SparkMax hopperDeployMotor;
     private final SparkMax intakeRollingMotor;
-    
     
     
     /** Create a new IntakeSubsystem */
@@ -29,13 +28,13 @@ public class IntakeSubsystem extends SubsystemBase {
         SparkMaxConfig hopperDeployConfig = new SparkMaxConfig();
 
         intakeDeployConfig
-            .smartCurrentLimit(BallConstants.INTAKE_DEPLOY_CURRENT_LIMIT)
+            .smartCurrentLimit(IntakeConstants.INTAKE_DEPLOY_CURRENT_LIMIT)
             .voltageCompensation(12);
         intakeRollingConfig
-            .smartCurrentLimit(BallConstants.INTAKE_ROLLING_CURRENT_LIMIT)
+            .smartCurrentLimit(IntakeConstants.INTAKE_ROLLING_CURRENT_LIMIT)
             .voltageCompensation(12);
         hopperDeployConfig
-            .smartCurrentLimit(BallConstants.HOPPER_DEPLOY_CURRENT_LIMIT)
+            .smartCurrentLimit(IntakeConstants.HOPPER_DEPLOY_CURRENT_LIMIT)
             .voltageCompensation(12);
 
         intakeDeployMotor.configure(intakeDeployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -47,29 +46,29 @@ public class IntakeSubsystem extends SubsystemBase {
      *  Deploy hopper
      */
     public void deployHopper() {
-        hopperDeployMotor.set(BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
+        hopperDeployMotor.set(IntakeConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
     }
 
     /**
      *  Retract hopper
      */
     public void retractHopper() {
-        hopperDeployMotor.set(-1 * BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
+        hopperDeployMotor.set(-1 * IntakeConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
     }
 
     /**
      *  Deploy intake
      */
     public void deployIntake() {
-        intakeDeployMotor.set(BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
-        intakeRollingMotor.set(BallConstants.DEFAULT_INTAKE_ROLLER_SPEED);
+        intakeDeployMotor.set(IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
+        intakeRollingMotor.set(IntakeConstants.DEFAULT_INTAKE_ROLLER_SPEED);
     }
 
     /**
      *  Retract intake
      */
     public void retractIntake() {
-        intakeDeployMotor.set(-1 * BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
+        intakeDeployMotor.set(-1 * IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
         intakeRollingMotor.set(0);
     }
 
@@ -111,7 +110,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     // public Command shootSequence() {
     //     return spinUpCommand()
-    //         .withTimeout(BallConstants.SPIN_UP_SECONDS)
+    //         .withTimeout(IntakeConstants.SPIN_UP_SECONDS)
     //         .andThen(shootCommand())
     //         .finallyDo(() -> stop());
     // }

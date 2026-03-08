@@ -63,7 +63,7 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerDegree = 0.15;
   }
 
-  public static class BallConstants {
+  public static class IntakeConstants {
     public static final int INTAKE_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int HOPPER_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
@@ -72,6 +72,8 @@ public final class Constants {
     public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
     public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+
+    public static final double INTAKE_DEPLOY_POINT = 0;
   }
 
   public static class ShooterConstants {
