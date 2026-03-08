@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         isDeployed = false;
         intakeDeployMotor = new SparkMax(CAN.INTAKE_DEPLOY, MotorType.kBrushless);
         intakeRollingMotor = new SparkMax(CAN.INTAKE_ROLLING, MotorType.kBrushless);
-        deployIntakeController = new SparkClosedLoopController();
+        deployIntakeController = intakeDeployMotor.getClosedLoopController();
 
         SparkMaxConfig intakeDeployConfig = new SparkMaxConfig();
         SparkMaxConfig intakeRollingConfig = new SparkMaxConfig();
@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
      *  Deploy intake
      */
     public void deployIntake() {
-        intakeDeployMotor.set(IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
+        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_DEPLOY_SETPOINT, null)
     }
 
     /**
