@@ -132,5 +132,9 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         flywheelSpeedPub.set(m_leftFlywheelLead.getVelocity().getValueAsDouble());
+        double ty = LimelightHelpers.getTY("limelight");
+        double limelightSightHeight = goalHeightIn - limelightHeightIn;
+        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
+        System.out.println(dist);
     }
 }
