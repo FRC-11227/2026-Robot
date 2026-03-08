@@ -44,14 +44,14 @@ public class IntakeSubsystem extends SubsystemBase {
      *  Deploy intake
      */
     public void deployIntake() {
-        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_DEPLOY_SETPOINT, null)
+        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_DEPLOY_POINT, SparkMax.ControlType.kVelocity);
     }
 
     /**
      *  Retract intake
      */
     public void retractIntake() {
-        intakeDeployMotor.set(-1 * IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
+        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_RETRACT_POINT, SparkMax.ControlType.kVelocity);
     }
 
     public void stopIntake() {
