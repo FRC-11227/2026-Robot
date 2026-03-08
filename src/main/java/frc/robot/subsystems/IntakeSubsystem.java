@@ -32,9 +32,10 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeDeployConfig
             .smartCurrentLimit(IntakeConstants.INTAKE_DEPLOY_CURRENT_LIMIT)
             .voltageCompensation(12);
-            .p(IntakeConstants.deploy_kP);
-            .i(IntakeConstants.deploy_kP);
-            .d(IntakeConstants.deploy_kP);
+        intakeDeployConfig.closedLoop
+            .p(IntakeConstants.deploy_kP)
+            .i(IntakeConstants.deploy_kI)
+            .d(IntakeConstants.deploy_kD);
         intakeRollingConfig
             .smartCurrentLimit(IntakeConstants.INTAKE_ROLLING_CURRENT_LIMIT)
             .voltageCompensation(12);
