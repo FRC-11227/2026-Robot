@@ -72,6 +72,10 @@ public final class Constants {
 
     public static final double INTAKE_DEPLOY_POINT = 0;
     public static final double INTAKE_RETRACT_POINT = 0;
+
+    public static final double deploy_kP = 0;
+    public static final double deploy_kI = 0;
+    public static final double deploy_kD = 0;
   }
 
   public static class ShooterConstants {
