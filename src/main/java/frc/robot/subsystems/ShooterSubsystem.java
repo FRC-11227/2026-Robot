@@ -5,6 +5,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 
+import frc.robot.LimelightHelpers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,12 +17,20 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.CAN;
 
 public class ShooterSubsystem extends SubsystemBase {
+
+    static NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    static NetworkTable table = inst.getTable("datatable");
+    static DoublePublisher distancePub = table.getDoubleTopic("distanceFromGoal").publish();
+
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
     final TalonFX m_leftFlywheelLead = new TalonFX(CAN.leftFlywheelLead, kCanivoreBus);
@@ -40,8 +49,13 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFXConfiguration flywheelConfigs = new TalonFXConfiguration();
     final TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
 
+    public static double limelightDeg = 5.0; 
+    public static double limelightHeightIn = 28.0; 
+    public static double goalHeightIn = 44.25;
+
+
     static InterpolatingDoubleTreeMap shooterTable = new InterpolatingDoubleTreeMap();
-    static List<Double> shooterDistList = new ArrayList<>(Arrays.asList(3.0, 7.0, 10.0, 15.0, 20.0));
+    static List<Double> shooterDistList = new ArrayList<>(Arrays.asList());
 
     public ShooterSubsystem() {
         // Check constants.java file to see the values provided
@@ -91,8 +105,24 @@ public class ShooterSubsystem extends SubsystemBase {
         m_leftFlywheelFeeder.getConfigurator().apply(feederConfigs);
         m_rightFlywheelFeeder.getConfigurator().apply(feederConfigs);
 
-        shooterTable.put(shooterDistList.get(0), 10.0);
-        shooterTable.put(shooterDistList.get(1), 30.0);
+        shooterTable.put(shooterDistList.get(0), 0.0);
+        shooterTable.put(shooterDistList.get(1), 0.0);
+        shooterTable.put(shooterDistList.get(2), 0.0);
+        shooterTable.put(shooterDistList.get(3), 0.0);
+        shooterTable.put(shooterDistList.get(4), 0.0);
+        shooterTable.put(shooterDistList.get(5), 0.0);
+        shooterTable.put(shooterDistList.get(6), 0.0);
+        shooterTable.put(shooterDistList.get(7), 0.0);
+        shooterTable.put(shooterDistList.get(8), 0.0);
+        shooterTable.put(shooterDistList.get(9), 0.0);
+    }
+
+    public static double getDistance() {
+        double ty = LimelightHelpers.getTY("limelight");
+        double limelightSightHeight = goalHeightIn - limelightHeightIn;
+        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
+        distancePub.set(dist);
+        return dist;
     }
 
     public static ArrayList<Double> findFloorCeil(double distance) {
@@ -147,12 +177,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootLeft() {
         double motorVelocity = m_leftFlywheelLead.getVelocity().getValueAsDouble();
-        double targetVelocity = 0;
+        double targetVelocity = getVelocity(1);
         return this.runEnd(
             () -> {
                 m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
                 if (motorVelocity > targetVelocity) {
-                    m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
+                    m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(targetVelocity).withFeedForward(0.5));
                 }
             },
             () -> {
@@ -164,12 +194,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootRight() {
         double motorVelocity = m_rightFlywheelLead.getVelocity().getValueAsDouble();
-        double targetVelocity = 0;
+        double targetVelocity = getVelocity(1);
         return this.runEnd(
             () -> {
                 m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(0).withFeedForward(0.5));
                 if (motorVelocity > targetVelocity) {
-                    m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(8).withFeedForward(0.5));
+                    m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(targetVelocity).withFeedForward(0.5));
                 }
             },
             () -> {
@@ -177,5 +207,13 @@ public class ShooterSubsystem extends SubsystemBase {
                 m_rightFlywheelFeeder.stopMotor();
             }
         );
+    }
+
+    @Override
+    public void periodic() {
+        double ty = LimelightHelpers.getTY("limelight");
+        double limelightSightHeight = goalHeightIn - limelightHeightIn;
+        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
+        System.out.println(dist);
     }
 }
