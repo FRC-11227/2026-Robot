@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -17,6 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax intakeDeployMotor;
     private final SparkMax intakeRollingMotor;
     private SparkClosedLoopController deployIntakeController;
+    private RelativeEncoder deployEncoder;
     private Boolean isDeployed;
     
     /** Create a new IntakeSubsystem */
@@ -25,6 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeDeployMotor = new SparkMax(CAN.INTAKE_DEPLOY, MotorType.kBrushless);
         intakeRollingMotor = new SparkMax(CAN.INTAKE_ROLLING, MotorType.kBrushless);
         deployIntakeController = intakeDeployMotor.getClosedLoopController();
+        deployEncoder = intakeDeployMotor.getEncoder();
 
         SparkMaxConfig intakeDeployConfig = new SparkMaxConfig();
         SparkMaxConfig intakeRollingConfig = new SparkMaxConfig();
@@ -48,14 +51,14 @@ public class IntakeSubsystem extends SubsystemBase {
      *  Deploy intake
      */
     public void deployIntake() {
-        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_DEPLOY_POINT, SparkMax.ControlType.kVelocity);
+        deployIntakeController.setSetpoint(IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED, SparkMax.ControlType.kVelocity);
     }
 
     /**
      *  Retract intake
      */
     public void retractIntake() {
-        deployIntakeController.setSetpoint(IntakeConstants.INTAKE_RETRACT_POINT, SparkMax.ControlType.kVelocity);
+        deployIntakeController.setSetpoint(-IntakeConstants.DEFAULT_INTAKE_DEPLOY_SPEED, SparkMax.ControlType.kVelocity);
     }
 
     public void stopIntake() {
