@@ -39,6 +39,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     final DoublePublisher flywheelSpeedPub;
 
+    public static double limelightDeg = 5.0; 
+    public static double limelightHeightIn = 28.0; 
+    public static double goalHeightIn = 44.25;
+
     public ShooterSubsystem(DoubleTopic flywheelVelocity) {
         // Check constants.java file to see the values provided
         flywheelSlot0Configs.kS = ShooterConstants.flywheel_kS;
