@@ -12,14 +12,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
+    static NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    static NetworkTable table = inst.getTable("datatable");
+    static DoublePublisher distancePub = table.getDoubleTopic("distanceFromGoal").publish();
+
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
     final TalonFX m_leftFlywheelLead = new TalonFX(CAN.leftFlywheelLead, kCanivoreBus);
@@ -73,14 +80,6 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightFlywheelFeeder.getConfigurator().apply(feederSlot0Configs);
 
         flywheelSpeedPub = flywheelVelocity.publish();
-    }
-
-    public static double getDistance() {
-        double ty = LimelightHelpers.getTY("limelight");
-        double limelightSightHeight = goalHeightIn - limelightHeightIn;
-        double dist = limelightSightHeight / Math.tan(limelightDeg + ty);
-        distancePub.set(dist);
-        return dist;
     }
 
     public static double getDistance() {
