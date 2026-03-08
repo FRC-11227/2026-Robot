@@ -25,7 +25,6 @@ public final class Constants {
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
 
-    public static final int HOPPER_DEPLOY = 9;
     public static final int INTAKE_DEPLOY = 10;
     public static final int INTAKE_ROLLING = 11;
     public static final int CLIMB = 12;
@@ -66,11 +65,9 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int INTAKE_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    public static final int HOPPER_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
 
     public static final double DEFAULT_INTAKE_ROLLER_SPEED = 0;
     public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
-    public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
 
     public static final double INTAKE_DEPLOY_POINT = 0;
