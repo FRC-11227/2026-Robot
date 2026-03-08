@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BallConstants;
@@ -42,39 +41,35 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeDeployMotor.configure(intakeDeployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intakeRollingMotor.configure(intakeRollingConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hopperDeployMotor.configure(hopperDeployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        SmartDashboard.putNumber("Roller speed when intaking", BallConstants.DEFAULT_INTAKE_ROLLER_SPEED);
-        SmartDashboard.putNumber("Intake deploy speed when deploying intake", BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
-        SmartDashboard.putNumber("Hopper deploy speed when deploying hopper", BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
     }
 
     /**
      *  Deploy hopper
      */
     public void deployHopper() {
-        hopperDeployMotor.set(SmartDashboard.getNumber("Hopper deploy speed when deploying hopper", BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED));
+        hopperDeployMotor.set(BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
     }
 
     /**
      *  Retract hopper
      */
     public void retractHopper() {
-        hopperDeployMotor.set(-1 * SmartDashboard.getNumber("Hopper deploy speed when deploying hopper", BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED));
+        hopperDeployMotor.set(-1 * BallConstants.DEFAULT_HOPPER_DEPLOY_SPEED);
     }
 
     /**
      *  Deploy intake
      */
     public void deployIntake() {
-        intakeDeployMotor.set(SmartDashboard.getNumber("Intake deploy speed when deploying intake", BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED));
-        intakeRollingMotor.set(SmartDashboard.getNumber("Roller speed when intaking", BallConstants.DEFAULT_INTAKE_ROLLER_SPEED));
+        intakeDeployMotor.set(BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
+        intakeRollingMotor.set(BallConstants.DEFAULT_INTAKE_ROLLER_SPEED);
     }
 
     /**
      *  Retract intake
      */
     public void retractIntake() {
-        intakeDeployMotor.set(-1 * SmartDashboard.getNumber("Intake deploy speed when deploying intake", BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED));
+        intakeDeployMotor.set(-1 * BallConstants.DEFAULT_INTAKE_DEPLOY_SPEED);
         intakeRollingMotor.set(0);
     }
 
