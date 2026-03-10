@@ -112,5 +112,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
   }
-
+  
+  public static class FieldConstants {
+    public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    public static double hubTagHeight = fieldLayout.getTags().get(10).pose.getZ();
+  }
 }
