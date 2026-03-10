@@ -1,11 +1,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +25,24 @@ public class IntakeSubsystem extends SubsystemBase {
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
     final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
+
+    public IntakeSubsystem() {
+        intakeAngle.setNeutralMode(NeutralModeValue.Brake);
+    }
+
+    // private final SparkClosedLoopController intake_pidController;
+
+    // public IntakeSubsystem() {
+    //     intake_pidController = intakeRollers.getClosedLoopController();
+    //     SparkMaxConfig config = new SparkMaxConfig();
+
+    //     config.closedLoop
+    //         .p(intakeConstants.intakeP)
+    //         .i(intakeConstants.intakeI)
+    //         .d(intakeConstants.intakeD); //Values are zero currently
+        
+    //     intakeRollers.configure(config, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kNoPersistParameters);
+    // }
 
     public void setRollerSpeed(double speed) {
         intakeRollers.set(speed);
