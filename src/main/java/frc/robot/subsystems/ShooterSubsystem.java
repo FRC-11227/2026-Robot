@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -50,6 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double currentFlywheelSetpoint;
 
+    static List<Double> shooterDistList = new ArrayList<>(Arrays.asList());
 
     public ShooterSubsystem(DoubleTopic flywheelVelocity, DoubleTopic distance, DoubleTopic limelightTY, DoubleTopic heightDiff) {
         // Check constants.java file to see the values provided
@@ -94,6 +100,37 @@ public class ShooterSubsystem extends SubsystemBase {
         heightDiffPub = heightDiff.publish();
 
         currentFlywheelSetpoint = 0.0;
+    }
+
+    public static ArrayList<Double> findFloorCeil(double distance) {
+        ArrayList<Double> results = new ArrayList<>();
+        int index = Collections.binarySearch(shooterDistList, distance);
+        double floorValue = 0.0;
+        double ceilingValue = 0.0;
+
+        if (index >= 0) {
+            floorValue = shooterDistList.get(index);
+            ceilingValue = shooterDistList.get(index);
+        } else {
+            int insertionPoint = -index - 1;
+
+            if (insertionPoint > 0) {
+                floorValue = shooterDistList.get(insertionPoint - 1);
+            }
+            if (insertionPoint < shooterDistList.size()) {
+                ceilingValue = shooterDistList.get(insertionPoint);
+            }
+        }
+        results.add(floorValue);
+        results.add(ceilingValue);
+        return results;
+    }
+
+    public static double getVelocity(double distance) {
+        ArrayList<Double> results = findFloorCeil(distance);
+        double percent = (results.get(1) - results.get(0)) == 0 ? 0 : (distance - results.get(0)) / (results.get(1) - results.get(0));
+        double valueBetween = ShooterConstants.lerpTable.get(results.get(1)) - ShooterConstants.lerpTable.get(results.get(0));
+        return results.get(0) + valueBetween * percent;
     }
 
     public void setFlywheelSpeed(double rps) {
