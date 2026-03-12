@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.Set;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -13,15 +18,15 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.RawFiducial;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -36,7 +41,6 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFX m_rightFlywheelFeeder = new TalonFX(CAN.rightFlywheelFeeder, kCanivoreBus);
 
     final VelocityTorqueCurrentFOC m_velocityTorqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
-    final VelocityVoltage m_VelocityVoltageRequest = new VelocityVoltage(0).withSlot(0);
 
     final Slot0Configs flywheelSlot0Configs = new Slot0Configs();
     final Slot0Configs feederSlot0Configs = new Slot0Configs();
@@ -49,6 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
     final DoublePublisher heightDiffPub;
 
     private double currentFlywheelSetpoint;
+    private double limelightDistance;
 
 
     public ShooterSubsystem(DoubleTopic flywheelVelocity, DoubleTopic distance, DoubleTopic limelightTY, DoubleTopic heightDiff) {
@@ -94,16 +99,17 @@ public class ShooterSubsystem extends SubsystemBase {
         heightDiffPub = heightDiff.publish();
 
         currentFlywheelSetpoint = 0.0;
+        limelightDistance = 0;
     }
 
     public void setFlywheelSpeed(double rps) {
-        m_rightFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(rps));
-        m_leftFlywheelLead.setControl(m_VelocityVoltageRequest.withVelocity(rps));
+        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
     }
 
     public void setFeederSpeed(double rps) {
-        m_leftFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(rps));
-        m_rightFlywheelFeeder.setControl(m_VelocityVoltageRequest.withVelocity(rps));
+        m_leftFlywheelFeeder.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_rightFlywheelFeeder.setControl(m_velocityTorqueRequest.withVelocity(rps));
     }
 
     public void stopFlywheels() {
@@ -132,10 +138,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootSequence() {
         return
-            this.run(() -> setFlywheelSpeed(currentFlywheelSetpoint))
+            runOnce(() -> pickScoringFlywheelSetpoint())
+            .andThen(run(() -> setFlywheelSpeed(currentFlywheelSetpoint))
             .until(this::ready)
             .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
-            .finallyDo(this::stopSystem);
+            .finallyDo(this::stopSystem)
+            );
     }
 
     public Command shootPauseSequence() {
@@ -145,39 +153,34 @@ public class ShooterSubsystem extends SubsystemBase {
         ).finallyDo(() -> this.stopSystem());
     }
 
-    public Command spinFeeder() {
-        return this.runEnd(
-            () -> {
-                // set velocity to 8 rps, add 0.5 V to overcome gravity
-                m_rightFlywheelFeeder.setControl(m_velocityTorqueRequest.withVelocity(50));
-                m_leftFlywheelFeeder.setControl(m_velocityTorqueRequest.withVelocity(50));
-            },
-            () -> {
-                m_leftFlywheelFeeder.stopMotor();
-                m_rightFlywheelFeeder.stopMotor();
-            });
-    }
-
     public void pickScoringFlywheelSetpoint() {
-        double targetDistance = limelightGetDistance(FieldConstants.hubTagHeight);
-        currentFlywheelSetpoint = ShooterConstants.lerpTable.get(targetDistance);
+        SmartDashboard.putNumber("DecidedDistance", limelightDistance);
+        currentFlywheelSetpoint = ShooterConstants.lerpTable.get(limelightDistance);
     }
 
-    public double limelightGetDistance(double targetHeight) {
-        double tY = LimelightHelpers.getTY("limelight");
-        limelightTYPub.set(tY);
+    public void updateDistanceToHub() {
+        Set<Integer> targetIds = Set.of(2, 5, 10, 18, 21, 26);
 
-        double limelightSightHeight = targetHeight - RobotConstants.limelightHeightInches;
-        heightDiffPub.set(limelightSightHeight);
+        // Get raw AprilTag/Fiducial data
+        RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
 
-        return limelightSightHeight / Math.tan((RobotConstants.limelightDegrees + tY) * Math.PI / 180);
+        // Find the "Best" tag (Filtered -> Sorted -> First)
+        Optional<RawFiducial> bestTag = Arrays.stream(fiducials)
+            .filter(f -> targetIds.contains(f.id))
+            .min(Comparator.comparingDouble(f -> f.ambiguity)); // .min() finds the lowest value
+
+        if (bestTag.isPresent()) {
+            limelightDistance = bestTag.get().distToCamera;
+        }
     }
 
     @Override
     public void periodic() {
         flywheelSpeedPub.set(m_leftFlywheelLead.getVelocity().getValueAsDouble());
         
-        double limelightDistance = limelightGetDistance(FieldConstants.hubTagHeight);
+        updateDistanceToHub();
         distancePub.set(limelightDistance);
+
+        SmartDashboard.putNumber("FlywheelSetpoint", currentFlywheelSetpoint);
     }
 }
