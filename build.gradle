@@ -1,7 +1,16 @@
+//orange Todo: Fix team number indexing for Gradle
+/*red The supplied phased action failed with an exception.
+A problem occurred configuring root project '2026-Robot-Mayiken'.
+A problem occurred evaluating root project '2026-Robot-Mayiken'.
+Could not find team number. Make sure either one is passed in, or the team number is set in the wpilib_preferences.json file. You can also use getTeamOrDefault(number) to pass in a default team number instead of getTeamValue*/
+//purple Java(0) 
+
 plugins{
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
 }
+
+//
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
