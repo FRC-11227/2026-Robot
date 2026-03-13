@@ -127,17 +127,17 @@ public class RobotContainer {
         joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
         joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
 
-        joystick.rightBumper().whileTrue(shooter.pass());
-        joystick.rightTrigger(0.5).whileTrue(
+        joystick.rightTrigger(0.5).whileTrue(shooter.pass());
+        joystick.rightBumper().whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
                 shooter.autoShootSequence(),
                 intake.jiggleIntake()
             )
         );
-        joystick.leftTrigger(0.5).whileTrue(intake.intakeBalls());
+        joystick.leftBumper().whileTrue(intake.intakeBalls());
         
-        joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> 
+        joystick.leftTrigger(0.5).whileTrue(drivetrain.applyRequest(() -> 
             drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
                 .withVelocityY(0 * MaxSpeed / 3) 
                 .withRotationalRate(-drivetrain.limelight_aim_proportional() * MaxAngularRate) // turn toward target
