@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");
@@ -33,7 +34,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
         // TODO: Check intake angle configuration on tuner and set it using code
+        intakeAngleSlot0Configs.kS = IntakeConstants.arm_kS;
+        intakeAngleSlot0Configs.kV = IntakeConstants.arm_kV;
+        intakeAngleSlot0Configs.kP = IntakeConstants.arm_kP;
+        intakeAngleSlot0Configs.kI = IntakeConstants.arm_kI;
+        intakeAngleSlot0Configs.kD = IntakeConstants.arm_kD;
+        
         SparkMaxConfig rollerConfig = new SparkMaxConfig();
+
 
         rollerConfig
             .voltageCompensation(12)
