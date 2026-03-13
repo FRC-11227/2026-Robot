@@ -126,6 +126,7 @@ public class RobotContainer {
         joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
         joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
 
+        joystick.rightBumper().whileTrue(shooter.pass());
         joystick.axisGreaterThan(3, 0.5).whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
@@ -133,14 +134,13 @@ public class RobotContainer {
                 intake.jiggleIntake()
             )
         );
-
         joystick.axisGreaterThan(2, 0.5).whileTrue(intake.intakeBalls());
         
-        // joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> 
-        //     drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
-        //         .withVelocityY(0 * MaxSpeed / 3) 
-        //         .withRotationalRate(-drivetrain.limelight_aim_proportional() * MaxAngularRate) // turn toward target
-        // ));
+        joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> 
+            drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
+                .withVelocityY(0 * MaxSpeed / 3) 
+                .withRotationalRate(-drivetrain.limelight_aim_proportional() * MaxAngularRate) // turn toward target
+        ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

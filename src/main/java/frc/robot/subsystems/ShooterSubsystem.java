@@ -146,6 +146,14 @@ public class ShooterSubsystem extends SubsystemBase {
             );
     }
 
+    public Command pass(){
+        return
+            runOnce(() -> setFlywheelSpeed(ShooterConstants.passSpeed))
+            .until(this::ready)
+            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .finallyDo(this::stopSystem);
+    }
+
     public Command shootPauseSequence() {
         return new ParallelCommandGroup(
             this.runOnce(() -> setFlywheelSpeed(50)),
