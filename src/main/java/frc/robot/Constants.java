@@ -44,11 +44,18 @@ public final class Constants {
     // TODO: Intake angle PID values should be stored here along with gear ratio
     public static final double arm_kS = 0.2;
     public static final double arm_kV = 0;
-    public static final double arm_kP = 128;
+    public static final double arm_kP = 12;
     public static final double arm_kI = 0;
     public static final double arm_kD = 0;
     public static final double arm_kA = 0;
     public static final double arm_kG = 0.9;
+
+    //public static final double armUp= 0.183195;
+    //public static final double armDown = 0.181;
+   
+
+    public static final double armUp= 0.233195;
+    public static final double armDown = 0.02;
     
     public static final double intakeRotateCurrentLimit = 95;
     public static final double intakeRotateSpeed = 0.3;

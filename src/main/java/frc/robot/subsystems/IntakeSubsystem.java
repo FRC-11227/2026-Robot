@@ -91,16 +91,28 @@ public class IntakeSubsystem extends SubsystemBase {
         return intakeAngle.getStatorCurrent().getValueAsDouble() > IntakeConstants.intakeRotateCurrentLimit;
     }
 
-    public Command intakeUp(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
+    public Command intakeDown(double speed) {
+        //swap out for .setIntakePosition
+        return this.runEnd(
+            () -> {
+                setIntakePosition(IntakeConstants.armDown);
+            },
+            () -> {
+                stopIntakeAngle();
+            });
+
+         
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));*/
     }
 
-    public Command intakeDown(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
+    public Command intakeUp(double speed) {
+        //swap out for .setIntakePosition
+        return this.run(() ->setIntakePosition(IntakeConstants.armUp));
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()));
+            .andThen(this.runOnce(() -> stopIntakeAngle()));*/
     }
 
     public Command jiggleIntake() {
