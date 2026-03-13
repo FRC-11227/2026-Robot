@@ -128,14 +128,14 @@ public class RobotContainer {
         joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
 
         joystick.rightBumper().whileTrue(shooter.pass());
-        joystick.axisGreaterThan(3, 0.5).whileTrue(
+        joystick.rightTrigger(0.5).whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
                 shooter.autoShootSequence(),
                 intake.jiggleIntake()
             )
         );
-        joystick.axisGreaterThan(2, 0.5).whileTrue(intake.intakeBalls());
+        joystick.leftTrigger(0.5).whileTrue(intake.intakeBalls());
         
         joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> 
             drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
