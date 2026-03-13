@@ -118,15 +118,15 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() -> brake));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
 
-        joystick.back().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
-        joystick.start().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
+        joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
+        joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
 
-        joystick.y().whileTrue(
+        joystick.rightBumper().whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
                 shooter.shootSequence(),
@@ -134,7 +134,7 @@ public class RobotContainer {
             )
         );
 
-        joystick.rightBumper().whileTrue(intake.intakeBalls());
+        joystick.leftBumper().whileTrue(intake.intakeBalls());
         
         // joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> 
         //     drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
@@ -150,7 +150,7 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
