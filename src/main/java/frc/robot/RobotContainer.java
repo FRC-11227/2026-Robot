@@ -119,6 +119,7 @@ public class RobotContainer {
         );
 
         joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(shooter.shootSequence());
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
@@ -130,7 +131,7 @@ public class RobotContainer {
         joystick.axisGreaterThan(3, 0.5).whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
-                shooter.shootSequence(),
+                shooter.autoShootSequence(),
                 intake.jiggleIntake()
             )
         );
