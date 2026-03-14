@@ -19,6 +19,97 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class CAN {
+    // CAN IDs of all devices in system
+    public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDERS
+    public static final int DRIVETRAIN_FRONT_RIGHT = 2;
+    public static final int DRIVETRAIN_BACK_LEFT = 3;
+    public static final int DRIVETRAIN_BACK_RIGHT = 4;
+    public static final int STEER_FRONT_LEFT = 5; 
+    public static final int STEER_FRONT_RIGHT = 6;
+    public static final int STEER_BACK_LEFT = 7;
+    public static final int STEER_BACK_RIGHT = 8;
+
+    public static final int HOPPER_DEPLOY = 9;
+    public static final int INTAKE_DEPLOY = 10;
+    public static final int INTAKE_ROLLING = 11;
+    public static final int CLIMB = 12;
+    public static final int FORK = 13;
+
+    public static final int leftFlywheelLead = 14;
+    public static final int leftFlywheelFollow = 15;
+    public static final int leftFLywheelFeeder = 16;
+
+    public static final int rightFlywheelLead = 17;
+    public static final int rightFlywheelFollow = 18;
+    public static final int rightFlywheelFeeder = 19;
+  }
+
+  public static class MotorConstants {
+    public static final int CIM_CURRENT_LIMIT = 60;
+  }
+
+  public static class DriveConstants {
+    // Current limit for drivetrain motors. 60A is a reasonable maximum to reduce
+    // likelihood of tripping breakers or damaging CIM motors
+    public static final int DRIVE_MOTOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final double DRIVE_MOTOR_SPEED = 0;
+    public static final double kTurnP = 0.01;
+    public static final double kTurnI = 0;
+    public static final double kTurnD = 0;
+
+    public static final double kTurnToleranceDeg = 5;
+    public static final double kTurnRateToleranceDegPerS = 10;
+    public static final double kMaxTurnRateDegPerS = 100;
+    public static final double kMaxTurnAccelerationDegPerSSquared = 300;
+
+    public static final double ksVolts = 1;
+    public static final double kvVoltSecondsPerDegree = 0.8;
+    public static final double kaVoltSecondsSquaredPerDegree = 0.15;
+  }
+
+  public static class BallConstants {
+    public static final int INTAKE_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int HOPPER_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+
+    public static final double DEFAULT_INTAKE_ROLLER_SPEED = 0;
+    public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
+    public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
+    public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+  }
+
+  public static class ShooterConstants {
+    public static final int FEEDER_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FEEDER_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FLYWHEEL_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FLYWHEEL_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+
+    public static final double DEFAULT_FEEDER_SPEED = 0;
+    public static final double DEFAULT_SHOOTER_SPEED = 0;
+
+    public static final double flywheel_kS = 0.1;
+    public static final double flywheel_kV = 0.12;
+    public static final double flywheel_kP = 0.11;
+    public static final double flywheel_kI = 0;
+    public static final double flywheel_kD = 0;
+
+    public static final double feeder_kS = 0;
+    public static final double feeder_kV = 0;
+    public static final double feeder_kP = 0.1;
+    public static final double feeder_kI = 0;
+    public static final double feeder_kD = 0;
+  }
+
+  public static class ClimbConstants {
+    public static final int CLIMB_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FORK_SUPPLY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final int FORK_STATOR_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
+    public static final double DEFAULT_CLIMB_SPEED = 0;
+    public static final double DEFAULT_FORK_SPEED = 0;
+  }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
@@ -90,4 +181,5 @@ public final class Constants {
     public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     public static double hubTagHeight = fieldLayout.getTags().get(10).pose.getZ();
   }
+
 }

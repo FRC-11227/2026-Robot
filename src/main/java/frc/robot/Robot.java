@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
 
+<<<<<<< HEAD
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.epilogue.Epilogue;
@@ -15,11 +16,16 @@ import edu.wpi.first.epilogue.logging.FileBackend;
 import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
+=======
+>>>>>>> Eric
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+<<<<<<< HEAD
 @Logged(strategy = Strategy.OPT_IN)
+=======
+>>>>>>> Eric
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
@@ -32,6 +38,7 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
+<<<<<<< HEAD
 
         // Expose deploy directory for Elastic layout download
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -56,12 +63,15 @@ public class Robot extends TimedRobot {
             config.minimumImportance = Logged.Importance.CRITICAL;
         });
         Epilogue.bind(this);
+=======
+>>>>>>> Eric
     }
 
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run(); 
+<<<<<<< HEAD
 
         /*
          * This example of adding Limelight is very simple and may not be sufficient for on-field use.
@@ -80,6 +90,8 @@ public class Robot extends TimedRobot {
         if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
             m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
         }
+=======
+>>>>>>> Eric
     }
 
     @Override
