@@ -43,11 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
         slot0.kI = IntakeConstants.arm_kI;
         slot0.kD = IntakeConstants.arm_kD;
 
-        // Motion Magic profile constraints — add these to IntakeConstants
-        MotionMagicConfigs mm = config.MotionMagic;
-        mm.MotionMagicCruiseVelocity = IntakeConstants.armCruiseVelocity;   // rot/s
-        mm.MotionMagicAcceleration   = IntakeConstants.armAcceleration;     // rot/s²
-        mm.MotionMagicJerk           = IntakeConstants.armJerk;             // rot/s³ (0 = disabled)
+        intakeAngle.getConfigurator().apply(slot0);
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -100,16 +96,17 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean intakeIsAtHardStop() {
         return intakeAngle.getStatorCurrent().getValueAsDouble() > IntakeConstants.intakeRotateCurrentLimit;
     }
-
-    public Command intakeDown(double speed) {
-        return this.runEnd(
-            () -> setIntakePosition(IntakeConstants.armDown),
-            () -> stopIntakeAngle()
-        );
+    
+    public Command intakeUp(double speed) {
+        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
+            .until(this::intakeIsAtHardStop)
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
     }
 
-    public Command intakeUp(double speed) {
-        return this.run(() -> setIntakePosition(IntakeConstants.armUp));
+    public Command intakeDown(double speed) {
+        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
+            .until(this::intakeIsAtHardStop)
+            .andThen(this.runOnce(() -> stopIntakeAngle()));
     }
 
     public Command jiggleIntake() {

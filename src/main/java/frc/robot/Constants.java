@@ -42,27 +42,19 @@ public final class Constants {
 
   public static class IntakeConstants {
     // TODO: Intake angle PID values should be stored here along with gear ratio
-    public static final double arm_kS = 0.01;
+    public static final double arm_kS = 0.2;
     public static final double arm_kV = 0;
-    public static final double arm_kP = 0.5;
+    public static final double arm_kP = 128;
     public static final double arm_kI = 0;
     public static final double arm_kD = 0;
     public static final double arm_kA = 0;
-    public static final double arm_kG = 0.1;
-
-    //public static final double armUp= 0.183195;
-    //public static final double armDown = 0.181;
-   
-    public static final double armCruiseVelocity = 0.1;  // rot/s  — tune this
-    public static final double armAcceleration   = 0.1;  // rot/s² — tune this
-    public static final double armJerk           = 0.001;  // rot/s³ — 0 disables S-curve smoothing
-
+    public static final double arm_kG = 0.9;
 
     public static final double armUp= 0.233195;
     public static final double armDown = 0.02;
     
-    public static final double intakeRotateCurrentLimit = 95;
-    public static final double intakeRotateSpeed = 0.17;
+    public static final double intakeRotateCurrentLimit = 65;
+    public static final double intakeRotateSpeed = 0.15;
     public static final int intakeUpDirection = -1;
     public static final int intakeDownDirection = 1;
 
