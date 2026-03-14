@@ -15,7 +15,7 @@
       },
       "SteerMotor": {
         "Id": 12,
-        "Name": "Front Left Steer",
+        "Name": "Back Left Steer",
         "Model": "Talon FX vers. F",
         "CANbus": "9B3407FB50374E53202020470F3710FF",
         "CANbusFriendly": "theGoose",
@@ -28,7 +28,7 @@
       },
       "DriveMotor": {
         "Id": 13,
-        "Name": "Front Left Drive",
+        "Name": "Back Left Drive",
         "Model": "Talon FX vers. C",
         "CANbus": "9B3407FB50374E53202020470F3710FF",
         "CANbusFriendly": "theGoose",
@@ -42,7 +42,7 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": false,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": 0.0576171875,
+      "EncoderOffset": 0.303466796875,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
@@ -91,7 +91,7 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": false,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": 0.068359375,
+      "EncoderOffset": -0.182373046875,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
@@ -140,7 +140,7 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": false,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": -0.18505859375,
+      "EncoderOffset": -0.431884765625,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
@@ -189,7 +189,7 @@
       "IsEncoderInverted": false,
       "IsSteerInverted": false,
       "SelectedEncoderType": "CANcoder",
-      "EncoderOffset": 0.027099609375,
+      "EncoderOffset": 0.277099609375,
       "DriveMotorSelectionState": 1,
       "SteerMotorSelectionState": 1,
       "SteerEncoderSelectionState": 1,
@@ -227,6 +227,6 @@
     "HasVerifiedDrive": true,
     "IsValidConfiguration": true
   },
-  "TeamNumber": 8089,
+  "TeamNumber": 0,
   "schema_version": "1"
 }

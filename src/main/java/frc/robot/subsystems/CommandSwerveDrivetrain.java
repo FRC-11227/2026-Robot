@@ -19,22 +19,25 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.math.controller.PIDController;
 import frc.robot.LimelightHelpers;
-import frc.robot.Constants.DriveConstants;
-
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -64,9 +67,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    /* PIDController for aiming toward net */
-    private static PIDController aimController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI,
-            DriveConstants.kTurnD);
+    private final Field2d m_field = new Field2d();
+
+    private static PIDController aimController = new PIDController(0.04, 0, 0);
+
+    // when the robot program starts
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    // Get the table within that instance that contains the data. There can
+    // be as many tables as you like and exist to make it easier to organize
+    // your data. In this case, it's a table called datatable.
+    NetworkTable table = inst.getTable("datatable");
+    // Start publishing topics within that table that correspond to the velocity
+    DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
+
+    /*
+     * SysId routine for characterizing translation. This is used to find PID gains
+     * for the drive motors.
+     */
+    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> setControl(m_translationCharacterization.withVolts(output)),
+                    null,
+                    this));
 
     // when the robot program starts
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -159,6 +187,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -185,6 +214,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        SmartDashboard.putData("Field", m_field);
     }
 
     /**
@@ -226,6 +256,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        SmartDashboard.putData("Field", m_field);
     }
 
     private void configureAutoBuilder() {
@@ -317,6 +348,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        m_field.setRobotPose(getState().Pose);
     }
 
     private void startSimThread() {
@@ -406,6 +439,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public double limelight_aim_proportional() {
+        LimelightHelpers.setPipelineIndex("", 1);
         double targetingAngularVelocity = -aimController.calculate(LimelightHelpers.getTX("limelight")); // calculate
                                                                                                          // velocity
                                                                                                          // toward
@@ -413,15 +447,4 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         targetingAngularVelocityPub.set(targetingAngularVelocity); // update values
         return targetingAngularVelocity;
     }
-
-    // public Command rotateToTarget() {
-    // return applyRequest(() ->
-    // drive.withVelocityX(0 * MaxSpeed / 3) // Drive forward with negative Y
-    // (forward)
-    // .withVelocityY(0 * MaxSpeed / 3) // Drive left with negative X (left)
-    // .withRotationalRate(limelight_aim_proportional() * MaxAngularRate) // Drive
-    // counterclockwise with negative X (left));
-    // );
-    // }
-
 }
