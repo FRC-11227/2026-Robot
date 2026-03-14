@@ -365,7 +365,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public double limelight_aim_proportional() {  
+    public double limelight_aim_proportional() { 
+        LimelightHelpers.setPipelineIndex("", 1); 
         double targetingAngularVelocity = -aimController.calculate(LimelightHelpers.getTX("limelight")); // calculate velocity toward target
         targetingAngularVelocityPub.set(targetingAngularVelocity); // update values 
         return targetingAngularVelocity;
