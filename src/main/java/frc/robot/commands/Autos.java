@@ -11,6 +11,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 public final class Autos {
+  public static Command nitrogenAuto() {
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Nitrogen path");
+      return AutoBuilder.followPath(path);
+    } catch(Exception err) {
+      return Commands.none();
+    }
+  }
+  
+  // public static Command rotateToTag(CommandSwerveDrivetrain swerveDrivetrain) {
+  //   return swerveDrivetrain.rotateToTarget();
+  // }
+
   /** Example static factory for an autonomous command. */
   public static Command autoPath_Right(CommandSwerveDrivetrain subsystem) {
     try{
@@ -20,9 +33,6 @@ public final class Autos {
       return Commands.none();
     }
   }
-  // public static Command rotateToTag(CommandSwerveDrivetrain swerveDrivetrain) {
-  //   return swerveDrivetrain.rotateToTarget();
-  // }
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");

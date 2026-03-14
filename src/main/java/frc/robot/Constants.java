@@ -10,6 +10,12 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
+import java.util.Map;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -31,7 +37,6 @@ public final class Constants {
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
 
-    public static final int HOPPER_DEPLOY = 9;
     public static final int INTAKE_DEPLOY = 10;
     public static final int INTAKE_ROLLING = 11;
     public static final int CLIMB = 12;
@@ -69,15 +74,20 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerDegree = 0.15;
   }
 
-  public static class BallConstants {
+  public static class IntakeConstants {
     public static final int INTAKE_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
     public static final int INTAKE_ROLLING_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
-    public static final int HOPPER_DEPLOY_CURRENT_LIMIT = MotorConstants.CIM_CURRENT_LIMIT;
 
     public static final double DEFAULT_INTAKE_ROLLER_SPEED = 0;
     public static final double DEFAULT_INTAKE_DEPLOY_SPEED = 0;
-    public static final double DEFAULT_HOPPER_DEPLOY_SPEED = 0;
     public static final double SPIN_UP_SECONDS = 1; // Will be replaced with PID in the future
+
+    public static final double INTAKE_DEPLOY_POINT = 0;
+    public static final double INTAKE_RETRACT_POINT = 0;
+
+    public static final double deploy_kP = 0.005;
+    public static final double deploy_kI = 0;
+    public static final double deploy_kD = 0;
   }
 
   public static class ShooterConstants {
@@ -89,17 +99,30 @@ public final class Constants {
     public static final double DEFAULT_FEEDER_SPEED = 0;
     public static final double DEFAULT_SHOOTER_SPEED = 0;
 
-    public static final double flywheel_kS = 0.1;
-    public static final double flywheel_kV = 0.12;
-    public static final double flywheel_kP = 0.11;
+    public static final double flywheel_kS = 0.28;
+    public static final double flywheel_kV = 0.118;
+    public static final double flywheel_kP = 0.09;
     public static final double flywheel_kI = 0;
     public static final double flywheel_kD = 0;
 
-    public static final double feeder_kS = 0;
-    public static final double feeder_kV = 0;
+    public static final double feeder_kS = 0.55;
+    public static final double feeder_kV = 0.131;
     public static final double feeder_kP = 0.1;
     public static final double feeder_kI = 0;
     public static final double feeder_kD = 0;
+
+    public static final double feederSetpointRPS = 30;
+  
+    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
+      Map.entry(119.0, 52.5),
+      Map.entry(128.0, 58.0),
+      Map.entry(185.0, 60.0)
+    );
+  }
+
+  public static class RobotConstants {
+    public static final double limelightHeightInches = 28.0;
+    public static final double limelightDegrees = 5.0;    
   }
 
   public static class ClimbConstants {
