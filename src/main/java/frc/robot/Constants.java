@@ -62,7 +62,7 @@ public final class Constants {
     public static final double armDown = 0.02;
     
     public static final double intakeRotateCurrentLimit = 95;
-    public static final double intakeRotateSpeed = 0.3;
+    public static final double intakeRotateSpeed = 0.17;
     public static final int intakeUpDirection = -1;
     public static final int intakeDownDirection = 1;
 
