@@ -50,6 +50,11 @@ public final class Constants {
     public static final double arm_kA = 0;
     public static final double arm_kG = 0.9;
 
+    //public static final double armCruiseVelocity = 0.25;
+    //public static final double armAccelleration = 0.25;
+    //public static final double armJerk =0;
+
+
     public static final double armUp= 0.233195;
     public static final double armDown = 0.02;
     
