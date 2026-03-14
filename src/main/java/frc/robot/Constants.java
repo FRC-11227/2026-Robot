@@ -54,8 +54,9 @@ public final class Constants {
     //public static final double armDown = 0.181;
    
     public static final double armCruiseVelocity = 0.25;  // rot/s  — tune this
-    public static final double armAcceleration   = 0.25;  // rot/s² — tune this
-    public static final double armJerk           = 0.0;  // rot/s³ — 0 disables S-curve smoothing
+    public static final double armAcceleration = 0.25;  // rot/s² — tune this
+    public static final double armJerk = 0.0;  // rot/s³ — 0 disables S-curve smoothing
+    public static final double armGearRatio = 24.7;
 
     //measured using talon fx plotting PID - reference, and position
     public static final double armUp= 0.223195;
