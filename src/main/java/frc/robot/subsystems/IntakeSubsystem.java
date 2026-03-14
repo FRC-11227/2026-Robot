@@ -89,8 +89,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRollerSpeed(double speed) {
-        //intakeRollers.set(speed);
-        rollerLoopController.setSetpoint(0.6, ControlType.kVelocity);
+        intakeRollers.set(speed);
+        //rollerLoopController.setSetpoint(0.6, ControlType.kVelocity);
     }
 
     public void stopRollers() {
