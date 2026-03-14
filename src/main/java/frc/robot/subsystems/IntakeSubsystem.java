@@ -33,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
     final MotionMagicVoltage motionMagicVoltageOut = new MotionMagicVoltage(0);
 
     final PositionVoltage positionVoltageOut = new PositionVoltage(0);
-    final MotionMagicConfigs intakeMotionMagic = new MotionMagicConfigs().withMotionMagicCruiseVelocity(0.25).withMotionMagicAcceleration(0.25);
+    final MotionMagicConfigs intakeMotionMagic = new MotionMagicConfigs().withMotionMagicCruiseVelocity(IntakeConstants.armCruiseVelocity).withMotionMagicAcceleration(IntakeConstants.armAcceleration);
     
     final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
 
