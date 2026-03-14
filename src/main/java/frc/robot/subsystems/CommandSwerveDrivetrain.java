@@ -4,12 +4,9 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-<<<<<<< HEAD
-=======
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
->>>>>>> Eric
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -22,40 +19,21 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
-<<<<<<< HEAD
-import edu.wpi.first.math.controller.PIDController;
-=======
->>>>>>> Eric
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-<<<<<<< HEAD
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-=======
->>>>>>> Eric
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-<<<<<<< HEAD
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.LimelightHelpers;
-=======
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
->>>>>>> Eric
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -85,15 +63,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-<<<<<<< HEAD
-    private final Field2d m_field = new Field2d();
-
-    private static PIDController aimController = new PIDController(0.04, 0, 0);
-=======
     /* PIDController for aiming toward net */
     private static PIDController aimController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
 
->>>>>>> Eric
 
     // when the robot program starts
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -104,10 +76,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // Start publishing topics within that table that correspond to the velocity
     DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
 
-<<<<<<< HEAD
-=======
 
->>>>>>> Eric
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -189,10 +158,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-<<<<<<< HEAD
-        SmartDashboard.putData("Field", m_field);
-=======
->>>>>>> Eric
     }
 
     /**
@@ -218,10 +183,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-<<<<<<< HEAD
-        SmartDashboard.putData("Field", m_field);
-=======
->>>>>>> Eric
     }
 
     /**
@@ -255,10 +216,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-<<<<<<< HEAD
-        SmartDashboard.putData("Field", m_field);
-=======
->>>>>>> Eric
     }
 
     private void configureAutoBuilder() {
@@ -341,11 +298,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-<<<<<<< HEAD
-
-        m_field.setRobotPose(getState().Pose);
-=======
->>>>>>> Eric
     }
 
     private void startSimThread() {
@@ -413,9 +365,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         targetingAngularVelocityPub.set(targetingAngularVelocity); // update values 
         return targetingAngularVelocity;
     }
-<<<<<<< HEAD
-}
-=======
     
     // public Command rotateToTarget() {
     //     return applyRequest(() -> 
@@ -426,4 +375,3 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // }
 }
 
->>>>>>> Eric
