@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -30,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
     // Replaces PositionVoltage — Motion Magic handles the trapezoid profile internally
+    final PositionVoltage positionVoltageOut = new PositionVoltage(0);
     final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
 
     public IntakeSubsystem() {
@@ -52,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
         SparkMaxConfig rollerConfig = new SparkMaxConfig();
         rollerConfig
             .voltageCompensation(12)
+            .smartCurrentLimit(80)
             .inverted(true);
 
         intakeRollers.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -81,7 +84,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     /** Sends a Motion Magic trapezoidal move to the target position (rotations). */
     public void setIntakePosition(double position) {
-        intakeAngle.setControl(motionMagicRequest.withPosition(position));
+        intakeAngle.setControl(positionVoltageOut.withPosition(position));
     }
 
     public void stopIntakeAngle() {
@@ -100,13 +103,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command intakeUp(double speed) {
         return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
+            .andThen(this.runOnce(() -> stopIntakeAngle()));
     }
 
     public Command intakeDown(double speed) {
         return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()));
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
     }
 
     public Command jiggleIntake() {

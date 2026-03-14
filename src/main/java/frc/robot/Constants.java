@@ -63,7 +63,7 @@ public final class Constants {
     public static final int intakeUpDirection = -1;
     public static final int intakeDownDirection = 1;
 
-    public static final double intakingRollerSpeed = 0.7;
+    public static final double intakingRollerSpeed = 0.8;
     public static final double intakingPosition = -0.01;
 
     public static final double jiggleFrequency = 1;
