@@ -4,14 +4,12 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -25,24 +23,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-<<<<<<< HEAD
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-=======
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
->>>>>>> origin/Eric
-=======
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.IntakeSubsystemVoltage;
-import frc.robot.subsystems.ShooterSubsystem;
->>>>>>> origin/Mayiken
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,26 +37,12 @@ import frc.robot.subsystems.ShooterSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-<<<<<<< HEAD
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-=======
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
-                                                                                        // speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
-
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 5% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
->>>>>>> origin/Mayiken
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -78,7 +50,6 @@ public class RobotContainer {
     configureBindings();
   }
 
-<<<<<<< HEAD
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -98,41 +69,8 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
-<<<<<<< HEAD
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
-=======
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
-=======
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController operatorJoystick = new CommandXboxController(1);
-
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable table = inst.getTable("datatable");
-
-    DoubleTopic flywheelVelocity = table.getDoubleTopic("flywheelVelocity");
-    DoubleTopic distanceTopic = table.getDoubleTopic("distance");
-    DoubleTopic limelightDistance = table.getDoubleTopic("limelightDistance");
-    DoubleTopic heightDiff = table.getDoubleTopic("HeightDiff");
-
-    DoubleTopic flywheelSpeed = table.getDoubleTopic("flywheelSpeed");
-
-    DoubleSubscriber flywheelSpeedSub;
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final ShooterSubsystem shooter = new ShooterSubsystem(flywheelVelocity, distanceTopic, limelightDistance,
-            heightDiff);
-    public final IntakeSubsystemVoltage intake = new IntakeSubsystemVoltage();
-
->>>>>>> origin/Mayiken
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -140,56 +78,16 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-<<<<<<< HEAD
         configureBindings();
 
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
-=======
-        SmartDashboard.putNumber("FlywheelSetpoint", 0.0);
-
-        SmartDashboard.putData("Swerve Drive", new Sendable() {
-            @Override
-            public void initSendable(SendableBuilder builder) {
-                builder.setSmartDashboardType("SwerveDrive");
-
-                builder.addDoubleProperty("Front Left Angle",
-                        () -> drivetrain.getModule(0).getCurrentState().angle.getRadians(), null);
-                builder.addDoubleProperty("Front Left Velocity",
-                        () -> drivetrain.getModule(0).getCurrentState().speedMetersPerSecond, null);
-
-                builder.addDoubleProperty("Front Right Angle",
-                        () -> drivetrain.getModule(1).getCurrentState().angle.getRadians(), null);
-                builder.addDoubleProperty("Front Right Velocity",
-                        () -> drivetrain.getModule(0).getCurrentState().speedMetersPerSecond, null);
-
-                builder.addDoubleProperty("Back Left Angle",
-                        () -> drivetrain.getModule(2).getCurrentState().angle.getRadians(), null);
-                builder.addDoubleProperty("Back Left Velocity",
-                        () -> drivetrain.getModule(0).getCurrentState().speedMetersPerSecond, null);
-
-                builder.addDoubleProperty("Back Right Angle",
-                        () -> drivetrain.getModule(3).getCurrentState().angle.getRadians(), null);
-                builder.addDoubleProperty("Back Right Velocity",
-                        () -> drivetrain.getModule(0).getCurrentState().speedMetersPerSecond, null);
-
-                builder.addDoubleProperty("Robot Angle", () -> drivetrain.getState().Pose.getRotation().getRadians(),
-                        null);
-            }
-        });
-
-        configureBindings();
-
-        // Warmup PathPlanner to avoid Java pauses
-        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
->>>>>>> origin/Mayiken
     }
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-<<<<<<< HEAD
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed / 3) // Drive forward with negative Y (forward)
@@ -197,24 +95,14 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-=======
-                // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                                   // negative Y
-                                                                                                   // (forward)
-                        .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with
-                                                                                    // negative X (left)
-                ));
->>>>>>> origin/Mayiken
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
         RobotModeTriggers.disabled().whileTrue(
-                drivetrain.applyRequest(() -> idle).ignoringDisable(true));
+            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+        );
 
-<<<<<<< HEAD
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
@@ -233,71 +121,32 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-=======
-        joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(shooter.shootSequence());
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        // point.withModuleDirection(new Rotation2d(-joystick.getLeftY(),
-        // -joystick.getLeftX()))
-        // ));
-
-        joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
-        joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
-
-        joystick.rightTrigger(0.5).whileTrue(shooter.pass());
-        joystick.rightBumper().whileTrue(
-                Commands.parallel(
-                        drivetrain.applyRequest(() -> brake),
-                        shooter.autoShootSequence(),
-                        intake.jiggleIntake()));
-        joystick.leftBumper().whileTrue(intake.intakeBalls());
-
-        joystick.leftTrigger(0.5).whileTrue(drivetrain.applyRequest(() -> drive.withVelocityX(0 * MaxSpeed / 3) // Don't
-                                                                                                                // drive
-                .withVelocityY(0 * MaxSpeed / 3)
-                .withRotationalRate(-drivetrain.limelight_aim_proportional() * MaxAngularRate) // turn toward target
-        ).finallyDo(() -> LimelightHelpers.setPipelineIndex("", 0)));
-
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
->>>>>>> origin/Mayiken
 
         // Reset the field-centric heading on left bumper press.
-        joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-<<<<<<< HEAD
         /* Run the path selected from the auto chooser */
         return Autos.exampleAuto(null);
-=======
-
-        /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
->>>>>>> origin/Mayiken
 
         // // Simple drive forward auton
         // final var idle = new SwerveRequest.Idle();
         // return Commands.sequence(
-        // // Reset our field centric heading to match the robot
-        // // facing away from our alliance station wall (0 deg).
-        // drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-        // // Then slowly drive forward (away from us) for 5 seconds.
-        // drivetrain.applyRequest(() ->
-        // drive.withVelocityX(0.5)
-        // .withVelocityY(0)
-        // .withRotationalRate(0)
-        // )
-        // .withTimeout(5.0),
-        // // Finally idle for the rest of auton
-        // drivetrain.applyRequest(() -> idle)
+        //     // Reset our field centric heading to match the robot
+        //     // facing away from our alliance station wall (0 deg).
+        //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+        //     // Then slowly drive forward (away from us) for 5 seconds.
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(0.5)
+        //             .withVelocityY(0)
+        //             .withRotationalRate(0)
+        //     )
+        //     .withTimeout(5.0),
+        //     // Finally idle for the rest of auton
+        //     drivetrain.applyRequest(() -> idle)
         // );
     }
->>>>>>> origin/Eric
 }

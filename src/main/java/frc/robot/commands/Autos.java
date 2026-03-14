@@ -24,9 +24,24 @@ public final class Autos {
     }
   }
 
-  public static Command exampleAuto(ExampleSubsystem subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
+  public static Command auto_RightPath(CommandSwerveDrivetrain swerveDrivetrain) {
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Right Path");
+      return AutoBuilder.followPath(path);
+    } catch (Exception err) {
+      return Commands.none();
+    }
   }
+
+  public static Command auto_LeftPath(CommandSwerveDrivetrain swerveDrivetrain) {
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Left Path");
+      return AutoBuilder.followPath(path);
+    } catch (Exception err) {
+      return Commands.none();
+    }
+  }
+  
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");

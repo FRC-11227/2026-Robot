@@ -17,116 +17,22 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
 
   public static class CAN {
-<<<<<<< HEAD
-=======
-    // CANivore bus
-    public static final int intakeAngle = 14;
-    public static final int leftFlywheelLead = 16;
-    public static final int leftFlywheelFollow = 17;
-    public static final int leftFLywheelFeeder = 18;
-
-    public static final int rightFlywheelLead = 19;
-    public static final int rightFlywheelFollow = 20;
-    public static final int rightFlywheelFeeder = 21;
-
-    // RIO bus
-    public static final int pdh = 1;
-    public static final int intakeRollers = 2;
-  }
-
-  public static class IntakeConstants {
-    // TODO: Intake angle PID values should be stored here along with gear ratio
-    public static final double arm_kS = 0.01;
-    public static final double arm_kV = 0;
-    public static final double arm_kP = 0.5;
-    public static final double arm_kI = 0;
-    public static final double arm_kD = 0;
-    public static final double arm_kA = 0;
-    public static final double arm_kG = 0.1;
-
-    //public static final double armUp= 0.183195;
-    //public static final double armDown = 0.181;
-   
-    public static final double armCruiseVelocity = 0.1;  // rot/s  — tune this
-    public static final double armAcceleration   = 0.1;  // rot/s² — tune this
-    public static final double armJerk           = 0.001;  // rot/s³ — 0 disables S-curve smoothing
-
-
-    public static final double armUp= 0.233195;
-    public static final double armDown = 0.02;
-    
-    public static final double intakeRotateCurrentLimit = 95;
-    public static final double intakeRotateSpeed = 0.17;
-    public static final int intakeUpDirection = -1;
-    public static final int intakeDownDirection = 1;
-
-    public static final double intakingRollerSpeed = 0.7;
-    public static final double intakingPosition = -0.01;
-
-    public static final double jiggleFrequency = 1;
-    public static final double jiggleAmplitude = 0.06;
-    public static final double jiggleOffset = 0.07;
-    public static final double jiggleRollerSpeed = 0.5;
-  }
-
-  public static class ShooterConstants {
-    public static final double flywheel_kS = 3.72;
-    public static final double flywheel_kV = 0.015;
-    public static final double flywheel_kP = 8;
-    public static final double flywheel_kI = 0;
-    public static final double flywheel_kD = 0;
-
-    public static final double feeder_kS = 24;
-    public static final double feeder_kV = 0.2;
-    public static final double feeder_kP = 8;
-    public static final double feeder_kI = 0;
-    public static final double feeder_kD = 0;
-
-    public static final double feederSetpointRPS = 30;
-    public static final double passSpeed = 80;
-
-    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
-      Map.entry(1.57, 47.0),
-      Map.entry(2.76, 55.0),
-      Map.entry(3.0, 57.0),
-      Map.entry(3.13, 60.0),
-      Map.entry(3.8, 64.5),
-      Map.entry(5.0, 73.0)
-    );
-  }
-
-  public static class RobotConstants {
-    public static final double limelightHeightInches = 28.0;
-    public static final double limelightDegrees = 10.0;    
-  }
-
-  public static class FieldConstants {
-    public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public static double hubTagHeight = fieldLayout.getTags().get(10).pose.getZ();
-  }
-
-  public static class CANConstants {
->>>>>>> origin/Mayiken
     // CAN IDs of all devices in system
     public static final int DRIVETRAIN_FRONT_LEFT = 1; // PLACEHOLDERS
     public static final int DRIVETRAIN_FRONT_RIGHT = 2;
     public static final int DRIVETRAIN_BACK_LEFT = 3;
     public static final int DRIVETRAIN_BACK_RIGHT = 4;
-    public static final int STEER_FRONT_LEFT = 5;
+    public static final int STEER_FRONT_LEFT = 5; 
     public static final int STEER_FRONT_RIGHT = 6;
     public static final int STEER_BACK_LEFT = 7;
     public static final int STEER_BACK_RIGHT = 8;
@@ -230,27 +136,6 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
-  }
-
-  public static class IntakeConstants {
-    // TODO: Intake angle PID values should be stored here along with gear ratio
-    public static final double intakeRotateCurrentLimit = 95;
-    public static final double intakeRotateSpeed = 0.3;
-    public static final int intakeUpDirection = -1;
-    public static final int intakeDownDirection = 1;
-
-    public static final double intakingRollerSpeed = 0.7;
-    public static final double intakingPosition = -0.01;
-
-    public static final double jiggleFrequency = 1;
-    public static final double jiggleAmplitude = 0.06;
-    public static final double jiggleOffset = 0.07;
-    public static final double jiggleRollerSpeed = 0.5;
-  }
-
-  public static class RobotConstants {
-    public static final double limelightHeightInches = 28.0;
-    public static final double limelightDegrees = 10.0;    
   }
 
   public static class FieldConstants {
