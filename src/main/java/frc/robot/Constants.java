@@ -41,6 +41,16 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
+    //roller PID values
+    public static final double roller_kS = 0;
+    public static final double roller_kV = 0.0;
+    public static final double roller_kP = 1;
+    public static final double roller_kI = 0;
+    public static final double roller_kD = 0;
+    public static final double roller_maxV = 0;
+    public static final double roller_minV = 0;
+
+
     // TODO: Intake angle PID values should be stored here along with gear ratio
     public static final double arm_kS = 0.2;
     public static final double arm_kV = 0;
@@ -49,6 +59,8 @@ public final class Constants {
     public static final double arm_kD = 0;
     public static final double arm_kA = 0;
     public static final double arm_kG = 0.9;
+
+
 
     //public static final double armCruiseVelocity = 0.25;
     //public static final double armAccelleration = 0.25;
