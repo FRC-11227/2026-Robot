@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
-import frc.robot.Constants.CAN;
+
+import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -11,25 +10,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveModule m_frontRight;
     private final SwerveModule m_backLeft;
     private final SwerveModule m_backRight;
-    
+
     public DrivetrainSubsystem() {
 
         m_frontLeft = new SwerveModule(
-            CAN.DRIVETRAIN_FRONT_LEFT,
-            CAN.STEER_FRONT_LEFT
-        );
+                CANConstants.DRIVETRAIN_FRONT_LEFT,
+                CANConstants.STEER_FRONT_LEFT);
         m_frontRight = new SwerveModule(
-            CAN.DRIVETRAIN_FRONT_RIGHT,
-            CAN.STEER_FRONT_RIGHT
-        );
+                CANConstants.DRIVETRAIN_FRONT_RIGHT,
+                CANConstants.STEER_FRONT_RIGHT);
         m_backLeft = new SwerveModule(
-            CAN.DRIVETRAIN_BACK_LEFT,
-            CAN.STEER_BACK_LEFT
-        );
+                CANConstants.DRIVETRAIN_BACK_LEFT,
+                CANConstants.STEER_BACK_LEFT);
         m_backRight = new SwerveModule(
-            CAN.DRIVETRAIN_BACK_RIGHT,
-            CAN.STEER_BACK_RIGHT
-        );
+                CANConstants.DRIVETRAIN_BACK_RIGHT,
+                CANConstants.STEER_BACK_RIGHT);
     }
 
     public void drive(double xSpeed, double ySpeed) {

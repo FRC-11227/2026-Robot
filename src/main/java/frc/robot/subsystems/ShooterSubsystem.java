@@ -167,11 +167,27 @@ public class ShooterSubsystem extends SubsystemBase {
         return flywheelAtVelocity(currentFlywheelSetpoint, 2);
     }
 
-    public Command shootSequence() {
+    public Command autoShootSequence() {
         return
             this.runOnce(() -> setFlywheelSpeed(currentFlywheelSetpoint))
             .until(this::ready)
             .andThen(runOnce(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .finallyDo(this::stopSystem);
+    }
+
+    public Command shootSequence() {
+        return
+            runOnce(() -> setFlywheelSpeed(60))
+            .until(this::ready)
+            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .finallyDo(this::stopSystem);
+    }
+
+    public Command pass(){
+        return
+            runOnce(() -> setFlywheelSpeed(ShooterConstants.passSpeed))
+            .until(this::ready)
+            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
             .finallyDo(this::stopSystem);
     }
 

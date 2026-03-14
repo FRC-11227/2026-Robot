@@ -6,8 +6,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
 
-import com.ctre.phoenix6.HootAutoReplay;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.epilogue.Epilogue;
@@ -21,46 +19,84 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+@Logged(strategy = Strategy.OPT_IN)
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private final RobotContainer m_robotContainer;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  public Robot() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-  }
+    /* log and replay timestamp and joystick data */
+    private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
+            .withTimestampReplay()
+            .withJoystickReplay();
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-  }
+    public Robot() {
+        m_robotContainer = new RobotContainer();
 
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {}
+        // Expose deploy directory for Elastic layout download
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+
+        Epilogue.configure(config -> {
+            // Log only to disk, instead of the default NetworkTables logging
+            // Note that this means data cannot be analyzed in realtime by a dashboard
+            config.backend = new FileBackend(DataLogManager.getLog());
+
+            if (isSimulation()) {
+                // If running in simulation, then we'd want to re-throw any errors that
+                // occur so we can debug and fix them!
+                config.errorHandler = ErrorHandler.crashOnError();
+            }
+
+            // Change the root data path
+            config.root = "Telemetry";
+
+            // Only log critical information instead of the default DEBUG level.
+            // This can be helpful in a pinch to reduce network bandwidth or log file size
+            // while still logging important information.
+            config.minimumImportance = Logged.Importance.CRITICAL;
+        });
+        Epilogue.bind(this);
+    }
 
     @Override
-    public void disabledPeriodic() {}
+    public void robotPeriodic() {
+        m_timeAndJoystickReplay.update();
+        CommandScheduler.getInstance().run();
+
+        /*
+         * This example of adding Limelight is very simple and may not be sufficient for
+         * on-field use.
+         * Users typically need to provide a standard deviation that scales with the
+         * distance to target
+         * and changes with number of tags available.
+         *
+         * This example is sufficient to show that vision integration is possible,
+         * though exact implementation
+         * of how to use vision should be tuned per-robot and to the team's
+         * specification.
+         */
+        var driveState = m_robotContainer.drivetrain.getState();
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+        double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+            m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+        }
+    }
 
     @Override
-    public void disabledExit() {}
+    public void disabledInit() {
+    }
+
+    @Override
+    public void disabledPeriodic() {
+    }
+
+    @Override
+    public void disabledExit() {
+    }
 
     @Override
     public void autonomousInit() {
@@ -72,10 +108,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+    }
 
     @Override
     public void teleopInit() {
@@ -85,10 +123,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     @Override
     public void testInit() {
@@ -96,11 +136,14 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     @Override
-    public void testExit() {}
+    public void testExit() {
+    }
 
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+    }
 }
