@@ -67,7 +67,8 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ShooterSubsystem shooter = new ShooterSubsystem(flywheelVelocity, distanceTopic, limelightDistance, heightDiff);
-    public final IntakeSubsystemVoltage intake = new IntakeSubsystemVoltage();
+    public final IntakeSubsystem intake = new IntakeSubsystem();
+    Trigger stopIntakeTrigger = new EventTrigger("Stop Intake");
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
