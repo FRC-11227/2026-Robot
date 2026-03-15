@@ -67,7 +67,7 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ShooterSubsystem shooter = new ShooterSubsystem(flywheelVelocity, distanceTopic, limelightDistance, heightDiff);
-    public final IntakeSubsystemVoltage intake = new IntakeSubsystemVoltage();
+    public final IntakeSubsystem intake = new IntakeSubsystem();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -103,16 +103,6 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-        NamedCommands.registerCommand("Shoot", Commands.parallel(
-                drivetrain.applyRequest(() -> brake),
-                shooter.autoShootSequence(),
-                intake.jiggleIntake()
-            ));
-        NamedCommands.registerCommand("Intake", intake.intakeDown(IntakeConstants.intakeRotateSpeed)
-        .andThen(intake.intakeBalls())
-        .until(stopIntakeTrigger)
-        .andThen(intake.intakeUp(IntakeConstants.intakeRotateSpeed))
-        );
     }
 
     private void configureBindings() {

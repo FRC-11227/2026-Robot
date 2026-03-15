@@ -85,8 +85,8 @@ public final class Constants {
     public static final double intakingPosition = -0.01;
 
     public static final double jiggleFrequency = 1;
-    public static final double jiggleAmplitude = 0.06;
-    public static final double jiggleOffset = 0.07;
+    public static final double jiggleAmplitude = 0.5;
+    public static final double jiggleOffset = -2.5;
     public static final double jiggleRollerSpeed = 0.5;
   }
 
