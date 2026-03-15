@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -35,8 +36,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     final TalonFX intakeAngle = new TalonFX(CAN.intakeAngle, kCanivoreBus);
-
-    final VelocityTorqueCurrentFOC intakeVelocityTorqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
 
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
@@ -105,6 +104,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntakePosition(double position) {
         intakeAngle.setControl(motionMagicVoltageOut.withPosition(position));
         //intakeAngle.setControl(positionVoltageOut.withPosition(position));
+    }
+
+    public void setIntakeJigglePosition(double position) {
+        intakeAngle.setControl(positionVoltageOut.withPosition(position));
     }
 
     public void stopIntakeAngle() {
