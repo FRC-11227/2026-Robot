@@ -12,11 +12,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -26,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");
@@ -40,25 +39,25 @@ public class IntakeSubsystem extends SubsystemBase {
 
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
-    // Replaces PositionVoltage — Motion Magic handles the trapezoid profile internally
+    final MotionMagicVoltage motionMagicVoltageOut = new MotionMagicVoltage(0);
+
     final PositionVoltage positionVoltageOut = new PositionVoltage(0);
-    final MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
+    final MotionMagicConfigs intakeMotionMagic = new MotionMagicConfigs().withMotionMagicCruiseVelocity(IntakeConstants.armCruiseVelocity).withMotionMagicAcceleration(IntakeConstants.armAcceleration);
+    
+    final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
 
     public IntakeSubsystem() {
-        //config for arm
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        // PID + feedforward gains (Slot 0)
-        Slot0Configs slot0 = config.Slot0;
-        slot0.kS = IntakeConstants.arm_kS;
-        slot0.kV = IntakeConstants.arm_kV;
-        slot0.kP = IntakeConstants.arm_kP;
-        slot0.kI = IntakeConstants.arm_kI;
-        slot0.kD = IntakeConstants.arm_kD;
-        intakeAngle.getConfigurator().apply(slot0);
-
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
+        // TODO: Check intake angle configuration on tuner and set it using code
+        intakeAngleSlot0Configs.kS = IntakeConstants.arm_kS;
+        intakeAngleSlot0Configs.kV = IntakeConstants.arm_kV;
+        intakeAngleSlot0Configs.kP = IntakeConstants.arm_kP;
+        intakeAngleSlot0Configs.kI = IntakeConstants.arm_kI;
+        intakeAngleSlot0Configs.kD = IntakeConstants.arm_kD;
+        //m_leftFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
+        intakeAngle.getConfigurator().apply(intakeAngleSlot0Configs);
         SparkMaxConfig rollerConfig = new SparkMaxConfig();
+
+
         rollerConfig
             .voltageCompensation(12)
             .smartCurrentLimit(80)
@@ -75,14 +74,15 @@ public class IntakeSubsystem extends SubsystemBase {
     
 
         intakeRollers.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+
+        intakeAngle.setNeutralMode(NeutralModeValue.Brake);
     }
 
     public double calculateJiggle() {
         double time = Timer.getFPGATimestamp();
-        double frequency = IntakeConstants.jiggleFrequency;
-        double amplitude  = IntakeConstants.jiggleAmplitude;
-        double offset     = IntakeConstants.jiggleOffset;
+        double frequency = IntakeConstants.jiggleFrequency; // Hz
+        double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
+        double offset = IntakeConstants.jiggleOffset;    // Center position
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
@@ -101,9 +101,9 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeAngle.setControl(dutyCycleOutRequest.withOutput(speed));
     }
 
-    /** Sends a Motion Magic trapezoidal move to the target position (rotations). */
     public void setIntakePosition(double position) {
-        intakeAngle.setControl(positionVoltageOut.withPosition(position));
+        intakeAngle.setControl(motionMagicVoltageOut.withPosition(position));
+        //intakeAngle.setControl(positionVoltageOut.withPosition(position));
     }
 
     public void stopIntakeAngle() {
@@ -118,17 +118,29 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean intakeIsAtHardStop() {
         return intakeAngle.getStatorCurrent().getValueAsDouble() > IntakeConstants.intakeRotateCurrentLimit;
     }
-    
-    public Command intakeUp(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
-            .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()));
-    }
 
     public Command intakeDown(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
+        //swap out for .setIntakePosition
+        return this.runEnd(
+            () -> {
+                setIntakePosition(IntakeConstants.armDown);
+            },
+            () -> {
+                stopIntakeAngle();
+            });
+
+         
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));*/
+    }
+
+    public Command intakeUp(double speed) {
+        //swap out for .setIntakePosition
+        return this.run(() ->setIntakePosition(IntakeConstants.armUp));
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
+            .until(this::intakeIsAtHardStop)
+            .andThen(this.runOnce(() -> stopIntakeAngle()));*/
     }
 
     public Command jiggleIntake() {
@@ -145,15 +157,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command intakeBalls() {
-        return this.runEnd(
-            () -> {
-                setRollerSpeed(0.7);
-                setIntakePosition(-0.01);
-            },
-            () -> {
-                stopIntakeAngle();
-                stopRollers();
-            }
-        );
+        return this.runEnd(() -> {
+            setRollerSpeed(0.7);
+            setIntakePosition(IntakeConstants.armDown);
+            
+        },
+        () -> {
+            stopIntakeAngle();
+            stopRollers();
+        });
     }
 }
