@@ -115,6 +115,7 @@ public class RobotContainer {
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
+            //todo hold intake arm 
         );
 
 
@@ -127,7 +128,7 @@ public class RobotContainer {
         );
 
         joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(shooter.shootSequence());
+        // joystick.b().whileTrue(shooter.shootSequence());
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
@@ -144,6 +145,7 @@ public class RobotContainer {
             )
         );
         joystick.leftBumper().whileTrue(intake.intakeBalls());
+        joystick.b().whileTrue(intake.spinRollers(-0.7));
         
         joystick.leftTrigger(0.5).whileTrue(drivetrain.applyRequest(() -> 
             drive.withVelocityX(0 * MaxSpeed / 3) // Don't drive
