@@ -21,8 +21,8 @@ public class ClimbSubsystem extends SubsystemBase {
     private final TalonFX forkMotor;
 
     public ClimbSubsystem() {
-        climbMotor = new SparkMax(CAN.CLIMB, MotorType.kBrushless);
-        forkMotor = new TalonFX(CAN.FORK);
+        climbMotor = new SparkMax(0, MotorType.kBrushless);
+        forkMotor = new TalonFX(1);
 
         SparkMaxConfig climbConfig = new SparkMaxConfig();
         TalonFXConfiguration forkConfig = new TalonFXConfiguration();

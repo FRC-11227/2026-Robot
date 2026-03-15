@@ -125,4 +125,12 @@ public final class Constants {
     public static AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     public static double hubTagHeight = fieldLayout.getTags().get(10).pose.getZ();
   }
+
+  public static class ClimbConstants {
+    public static final int CLIMB_CURRENT_LIMIT = 60;
+    public static final int FORK_SUPPLY_CURRENT_LIMIT = 60;
+    public static final int FORK_STATOR_CURRENT_LIMIT = 60;
+    public static final double DEFAULT_CLIMB_SPEED = 0;
+    public static final double DEFAULT_FORK_SPEED = 0;
+  }
 }
