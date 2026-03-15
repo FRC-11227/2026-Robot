@@ -11,7 +11,9 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.generated.TunerConstants;
@@ -64,6 +67,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final ShooterSubsystem shooter = new ShooterSubsystem(flywheelVelocity, distanceTopic, limelightDistance, heightDiff);
     public final IntakeSubsystem intake = new IntakeSubsystem();
+    Trigger stopIntakeTrigger = new EventTrigger("Stop Intake");
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -99,6 +103,16 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+        NamedCommands.registerCommand("Shoot", Commands.parallel(
+                drivetrain.applyRequest(() -> brake),
+                shooter.autoShootSequence(),
+                intake.jiggleIntake()
+            ));
+        NamedCommands.registerCommand("Intake", intake.intakeDown(IntakeConstants.intakeRotateSpeed)
+        .andThen(intake.intakeBalls())
+        .until(stopIntakeTrigger)
+        .andThen(intake.intakeUp(IntakeConstants.intakeRotateSpeed))
+        );
     }
 
     private void configureBindings() {
