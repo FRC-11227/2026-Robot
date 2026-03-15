@@ -8,13 +8,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,15 +27,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     final SparkMax intakeRollers = new SparkMax(CAN.intakeRollers, MotorType.kBrushless);
     final TalonFX intakeAngle = new TalonFX(CAN.intakeAngle, kCanivoreBus);
+
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
     final MotionMagicVoltage motionMagicVoltageOut = new MotionMagicVoltage(0);
 
     final PositionVoltage positionVoltageOut = new PositionVoltage(0);
     final MotionMagicConfigs intakeMotionMagic = new MotionMagicConfigs().withMotionMagicCruiseVelocity(IntakeConstants.armCruiseVelocity).withMotionMagicAcceleration(IntakeConstants.armAcceleration);
-    final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
-
     
+    final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
 
     public IntakeSubsystem() {
         // TODO: Check intake angle configuration on tuner and set it using code
@@ -140,7 +138,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command intakeBalls() {
         return this.runEnd(() -> {
             setRollerSpeed(0.7);
-            setIntakePosition(-0.01);
+            setIntakePosition(IntakeConstants.armDown);
+            
         },
         () -> {
             stopIntakeAngle();
