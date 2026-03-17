@@ -150,7 +150,7 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(
             Commands.parallel(
                 drivetrain.applyRequest(() -> brake),
-                shooter.autoShootSequence(),
+                shooter.shootSequence(),
                 intake.jiggleIntake()
             )
         );
