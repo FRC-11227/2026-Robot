@@ -104,8 +104,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public void setFlywheelSpeed(double rps) {
-        double errorRight = ShooterConstants.feederSetpointRPS - m_rightFlywheelFeeder.getVelocity().getValueAsDouble();
-        double errorLeft = ShooterConstants.feederSetpointRPS - m_leftFlywheelFeeder.getVelocity().getValueAsDouble();
+        // double errorRight = ShooterConstants.feederSetpointRPS - m_rightFlywheelFeeder.getVelocity().getValueAsDouble();
+        // double errorLeft = ShooterConstants.feederSetpointRPS - m_leftFlywheelFeeder.getVelocity().getValueAsDouble();
+        double errorRight = m_rightFlywheelFeeder.getClosedLoopError().getValueAsDouble();
+        double errorLeft = m_leftFlywheelFeeder.getClosedLoopError().getValueAsDouble();
         m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorRight * ShooterConstants.feederErrorGain));
         m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorLeft * ShooterConstants.feederErrorGain));
     }
