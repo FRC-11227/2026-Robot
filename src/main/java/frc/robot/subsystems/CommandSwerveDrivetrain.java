@@ -96,31 +96,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     null,
                     this));
 
-    // when the robot program starts
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    // Get the table within that instance that contains the data. There can
-    // be as many tables as you like and exist to make it easier to organize
-    // your data. In this case, it's a table called datatable.
-    NetworkTable table = inst.getTable("datatable");
-    // Start publishing topics within that table that correspond to the velocity
-    DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
-
-    /*
-     * SysId routine for characterizing translation. This is used to find PID gains
-     * for the drive motors.
-     */
-    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                    null, // Use default ramp rate (1 V/s)
-                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-                    null, // Use default timeout (10 s)
-                    // Log state with SignalLogger class
-                    state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
-            new SysIdRoutine.Mechanism(
-                    output -> setControl(m_translationCharacterization.withVolts(output)),
-                    null,
-                    this));
-
     /*
      * SysId routine for characterizing steer. This is used to find PID gains for
      * the steer motors.
