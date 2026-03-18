@@ -110,6 +110,8 @@ public class ShooterSubsystem extends SubsystemBase {
         double errorLeft = m_leftFlywheelFeeder.getClosedLoopError().getValueAsDouble();
         m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorRight * ShooterConstants.feederErrorGain));
         m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorLeft * ShooterConstants.feederErrorGain));
+        SmartDashboard.putNumber("rightFlywheel", rps + errorRight * ShooterConstants.feederErrorGain);
+        SmartDashboard.putNumber("leftFlywheel", rps + errorLeft * ShooterConstants.feederErrorGain);
     }
 
     public void setFeederSpeed(double rps) {
@@ -155,7 +157,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return
             runOnce(() -> setFlywheelSpeed(40))
             .until(this::ready)
-            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .andThen(run(() -> {
+                setFeederSpeed(ShooterConstants.feederSetpointRPS);
+                setFlywheelSpeed(40);
+            }))
             .finallyDo(this::stopSystem);
     }
 
