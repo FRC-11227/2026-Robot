@@ -68,7 +68,6 @@ public class IntakeSubsystem extends SubsystemBase {
             .d(IntakeConstants.roller_kD)
             .outputRange(IntakeConstants.roller_minV, IntakeConstants.roller_maxV)
             .feedForward
-                .kS(IntakeConstants.roller_kS)
                 .kV(IntakeConstants.roller_kV,ClosedLoopSlot.kSlot0);
     
 
@@ -88,8 +87,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRollerSpeed(double speed) {
-        intakeRollers.set(speed);
-        //rollerLoopController.setSetpoint(0.6, ControlType.kVelocity);
+        //intakeRollers.set(speed);
+        rollerLoopController.setSetpoint(speed, ControlType.kVelocity);
     }
 
     public void stopRollers() {
@@ -161,7 +160,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command intakeBalls() {
         return this.runEnd(() -> {
-            setRollerSpeed(0.7);
+            setRollerSpeed(3800);
             setIntakePosition(IntakeConstants.armDown);
             
         },

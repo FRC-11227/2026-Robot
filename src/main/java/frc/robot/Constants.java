@@ -42,12 +42,11 @@ public final class Constants {
 
   public static class IntakeConstants {
     //roller PID values
-    public static final double roller_kS = 0;
-    public static final double roller_kV = 0.0;
-    public static final double roller_kP = 1;
+    public static final double roller_kV = 0.00018;
+    public static final double roller_kP = 0.00018;
     public static final double roller_kI = 0;
     public static final double roller_kD = 0;
-    public static final double roller_maxV = 0;
+    public static final double roller_maxV = 12;
     public static final double roller_minV = 0;
 
 
@@ -85,8 +84,8 @@ public final class Constants {
     public static final double intakingPosition = -0.01;
 
     public static final double jiggleFrequency = 1;
-    public static final double jiggleAmplitude = 0.5;
-    public static final double jiggleOffset = -2.5;
+    public static final double jiggleAmplitude = 1;
+    public static final double jiggleOffset = -3.5;
     public static final double jiggleRollerSpeed = 0.5;
   }
 
