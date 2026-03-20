@@ -64,14 +64,14 @@ public class IntakeSubsystem extends SubsystemBase {
             .smartCurrentLimit(80)
             .inverted(true);
 
-        rollerConfig.closedLoop
-            .p(IntakeConstants.roller_kP)
-            .i(IntakeConstants.roller_kI)
-            .d(IntakeConstants.roller_kD)
-            .outputRange(IntakeConstants.roller_minV, IntakeConstants.roller_maxV)
-            .feedForward
-                .kS(IntakeConstants.roller_kS)
-                .kV(IntakeConstants.roller_kV,ClosedLoopSlot.kSlot0);
+        // rollerConfig.closedLoop
+        //     .p(IntakeConstants.roller_kP)
+        //     .i(IntakeConstants.roller_kI)
+        //     .d(IntakeConstants.roller_kD)
+        //     .outputRange(IntakeConstants.roller_minV, IntakeConstants.roller_maxV)
+        //     .feedForward
+        //         .kS(IntakeConstants.roller_kS)
+        //         .kV(IntakeConstants.roller_kV,ClosedLoopSlot.kSlot0);
     
 
         intakeRollers.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
