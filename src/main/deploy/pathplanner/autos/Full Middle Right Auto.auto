@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Durham Full Middle Right Path"
@@ -25,13 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 5.0
+            "name": "Shoot"
           }
         }
       ]
