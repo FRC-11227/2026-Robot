@@ -20,7 +20,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -50,8 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double currentFlywheelSetpoint;
     private double limelightDistance;
 
-
-    public ShooterSubsystem(DoubleTopic flywheelVelocity, DoubleTopic distance, DoubleTopic limelightTY, DoubleTopic heightDiff) {
+    public ShooterSubsystem() {
         // Check constants.java file to see the values provided
         flywheelSlot0Configs.kS = ShooterConstants.flywheel_kS;
         flywheelSlot0Configs.kV = ShooterConstants.flywheel_kV;
@@ -87,11 +89,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
         m_leftFlywheelFeeder.getConfigurator().apply(feederSlot0Configs);
         m_rightFlywheelFeeder.getConfigurator().apply(feederSlot0Configs);
-
-        flywheelSpeedPub = flywheelVelocity.publish();
-        distancePub = distance.publish();
-        limelightTYPub = limelightTY.publish();
-        heightDiffPub = heightDiff.publish();
 
         currentFlywheelSetpoint = 0.0;
         limelightDistance = 0;
@@ -143,7 +140,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootSequence() {
         return
-            runOnce(() -> setFlywheelSpeed(60))
+            runOnce(() -> setFlywheelSpeed(75))
             .until(this::ready)
             .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
             .finallyDo(this::stopSystem);
@@ -188,8 +185,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {        
         updateDistanceToHub();
-        distancePub.set(limelightDistance);
-
+        SmartDashboard.putNumber("LimelightDistance", limelightDistance);
         SmartDashboard.putNumber("FlywheelSetpoint", currentFlywheelSetpoint);
         SmartDashboard.putNumber("LeftFlywheelVelocity", m_leftFlywheelLead.getVelocity().getValueAsDouble());
     }
