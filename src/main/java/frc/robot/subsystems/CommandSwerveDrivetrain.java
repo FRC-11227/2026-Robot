@@ -81,15 +81,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private double limelightAngle = 0;
 
-    // when the robot program starts
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    // Get the table within that instance that contains the data. There can
-    // be as many tables as you like and exist to make it easier to organize
-    // your data. In this case, it's a table called datatable.
-    NetworkTable table = inst.getTable("datatable");
-    // Start publishing topics within that table that correspond to the velocity
-    DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
-
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -423,7 +414,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public double limelight_aim_proportional() { 
         double targetingAngularVelocity = -aimController.calculate(limelightAngle); // calculate velocity toward target
-        targetingAngularVelocityPub.set(targetingAngularVelocity); // update values 
         return targetingAngularVelocity;
     }
 

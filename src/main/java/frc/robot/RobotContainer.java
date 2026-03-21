@@ -49,20 +49,8 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable table = inst.getTable("datatable");
-
-    DoubleTopic flywheelVelocity = table.getDoubleTopic("flywheelVelocity");
-    DoubleTopic distanceTopic = table.getDoubleTopic("distance");
-    DoubleTopic limelightDistance = table.getDoubleTopic("limelightDistance");
-    DoubleTopic heightDiff = table.getDoubleTopic("HeightDiff");
-
-    DoubleTopic flywheelSpeed = table.getDoubleTopic("flywheelSpeed");
-
-    DoubleSubscriber flywheelSpeedSub;
-
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final ShooterSubsystem shooter = new ShooterSubsystem(flywheelVelocity, distanceTopic, limelightDistance, heightDiff);
+    public final ShooterSubsystem shooter = new ShooterSubsystem();
     public final IntakeSubsystem intake = new IntakeSubsystem();
     Trigger stopIntakeTrigger = new EventTrigger("Stop Intake");
 

@@ -47,11 +47,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     final DutyCycleOut m_DutyCycle = new DutyCycleOut(0.0);
 
-    final DoublePublisher flywheelSpeedPub;
-    final DoublePublisher distancePub;
-    final DoublePublisher limelightTYPub;
-    final DoublePublisher heightDiffPub;
-
     private double currentFlywheelSetpoint;
     private double limelightDistance;
 
@@ -100,7 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         currentFlywheelSetpoint = 0.0;
         limelightDistance = 0;
-    }
+    } 
 
     public void setFlywheelSpeed(double rps) {
         m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
@@ -191,12 +186,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
-        flywheelSpeedPub.set(m_leftFlywheelLead.getVelocity().getValueAsDouble());
-        
+    public void periodic() {        
         updateDistanceToHub();
         distancePub.set(limelightDistance);
 
         SmartDashboard.putNumber("FlywheelSetpoint", currentFlywheelSetpoint);
+        SmartDashboard.putNumber("LeftFlywheelVelocity", m_leftFlywheelLead.getVelocity().getValueAsDouble());
     }
 }
