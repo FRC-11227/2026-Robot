@@ -87,7 +87,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRollerSpeed(double speed) {
-        //intakeRollers.set(speed);
+        // intakeRollers.set(speed);
         rollerLoopController.setSetpoint(speed, ControlType.kVelocity);
     }
 
@@ -149,7 +149,8 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.runEnd(
             () -> {
                 setIntakePosition(calculateJiggle());
-                setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
+                intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
+                // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
             },
             () -> {
                 stopIntakeAngle();
