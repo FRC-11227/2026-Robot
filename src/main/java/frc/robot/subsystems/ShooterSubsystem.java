@@ -103,8 +103,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setFlywheelSpeed(double rps) {
-        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
-        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        double errorRight = m_rightFlywheelFeeder.getClosedLoopError().getValueAsDouble();
+        double errorLeft = m_leftFlywheelFeeder.getClosedLoopError().getValueAsDouble();
+        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorRight * ShooterConstants.feederErrorGain));
+        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorLeft * ShooterConstants.feederErrorGain));
+        SmartDashboard.putNumber("rightFlywheel", rps + errorRight * ShooterConstants.feederErrorGain);
+        SmartDashboard.putNumber("leftFlywheel", rps + errorLeft * ShooterConstants.feederErrorGain);
     }
 
     public void setFeederSpeed(double rps) {

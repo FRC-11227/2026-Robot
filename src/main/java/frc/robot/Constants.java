@@ -117,6 +117,9 @@ public final class Constants {
     public static final double feederSetpointRPS = 30;
     public static final double passSpeed = 80;
 
+    public static final double feederErrorGain = 5.0;
+    public static final double feederErrorTolerance = 1.0;
+
     public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
       Map.entry(1.57, 47.0),
       Map.entry(2.76, 55.0),
