@@ -1,13 +1,21 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,26 +26,51 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
     final SparkMax intakeRollers = new SparkMax(CAN.intakeRollers, MotorType.kBrushless);
+    final SparkClosedLoopController rollerLoopController = intakeRollers.getClosedLoopController();
+
+
     final TalonFX intakeAngle = new TalonFX(CAN.intakeAngle, kCanivoreBus);
 
     final DutyCycleOut dutyCycleOutRequest = new DutyCycleOut(0);
 
-    final PositionVoltage positionVoltageOut = new PositionVoltage(0);
+    final MotionMagicVoltage motionMagicVoltageOut = new MotionMagicVoltage(0);
 
+    final PositionVoltage positionVoltageOut = new PositionVoltage(0);
+    final MotionMagicConfigs intakeMotionMagic = new MotionMagicConfigs().withMotionMagicCruiseVelocity(IntakeConstants.armCruiseVelocity).withMotionMagicAcceleration(IntakeConstants.armAcceleration);
+    
     final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
 
     public IntakeSubsystem() {
         // TODO: Check intake angle configuration on tuner and set it using code
+        intakeAngleSlot0Configs.kS = IntakeConstants.arm_kS;
+        intakeAngleSlot0Configs.kV = IntakeConstants.arm_kV;
+        intakeAngleSlot0Configs.kP = IntakeConstants.arm_kP;
+        intakeAngleSlot0Configs.kI = IntakeConstants.arm_kI;
+        intakeAngleSlot0Configs.kD = IntakeConstants.arm_kD;
+        //m_leftFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
+        intakeAngle.getConfigurator().apply(intakeAngleSlot0Configs);
         SparkMaxConfig rollerConfig = new SparkMaxConfig();
+
 
         rollerConfig
             .voltageCompensation(12)
+            .smartCurrentLimit(80)
             .inverted(true);
+
+        rollerConfig.closedLoop
+            .p(IntakeConstants.roller_kP)
+            .i(IntakeConstants.roller_kI)
+            .d(IntakeConstants.roller_kD)
+            .outputRange(IntakeConstants.roller_minV, IntakeConstants.roller_maxV)
+            .feedForward
+                .kV(IntakeConstants.roller_kV,ClosedLoopSlot.kSlot0);
+    
 
         intakeRollers.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -55,7 +88,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRollerSpeed(double speed) {
-        intakeRollers.set(speed);
+        // intakeRollers.set(speed);
+        rollerLoopController.setSetpoint(speed, ControlType.kVelocity);
     }
 
     public void stopRollers() {
@@ -67,6 +101,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setIntakePosition(double position) {
+        intakeAngle.setControl(motionMagicVoltageOut.withPosition(position));
+        //intakeAngle.setControl(positionVoltageOut.withPosition(position));
+    }
+
+    public void setIntakeJigglePosition(double position) {
         intakeAngle.setControl(positionVoltageOut.withPosition(position));
     }
 
@@ -83,23 +122,36 @@ public class IntakeSubsystem extends SubsystemBase {
         return intakeAngle.getStatorCurrent().getValueAsDouble() > IntakeConstants.intakeRotateCurrentLimit;
     }
 
-    public Command intakeUp(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
+    public Command intakeDown(double speed) {
+        //swap out for .setIntakePosition
+        return this.runEnd(
+            () -> {
+                setIntakePosition(IntakeConstants.armDown);
+            },
+            () -> {
+                stopIntakeAngle();
+            });
+
+         
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeUpDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));*/
     }
 
-    public Command intakeDown(double speed) {
-        return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
+    public Command intakeUp(double speed) {
+        //swap out for .setIntakePosition
+        return this.run(() ->setIntakePosition(IntakeConstants.armUp));
+        /*return this.run(() -> setIntakeAngleSpeed(speed * IntakeConstants.intakeDownDirection))
             .until(this::intakeIsAtHardStop)
-            .andThen(this.runOnce(() -> stopIntakeAngle()));
+            .andThen(this.runOnce(() -> stopIntakeAngle()));*/
     }
 
     public Command jiggleIntake() {
         return this.runEnd(
             () -> {
                 setIntakePosition(calculateJiggle());
-                setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
+                intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
+                // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
             },
             () -> {
                 stopIntakeAngle();
@@ -110,8 +162,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command intakeBalls() {
         return this.runEnd(() -> {
-            setRollerSpeed(0.7);
-            setIntakePosition(-0.01);
+            setRollerSpeed(3800);
+            setIntakePosition(IntakeConstants.armDown);
+            
         },
         () -> {
             stopIntakeAngle();

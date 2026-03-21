@@ -2,12 +2,16 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -22,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -34,7 +39,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -66,7 +73,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final Field2d m_field = new Field2d();
 
-    private static PIDController aimController = new PIDController(0.04, 0, 0);
+    private static PIDController aimController = new PIDController(0.03, 0, 0.002);
+
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(DriveConstants.MaxSpeed * 0.05).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.05) // Add a 5% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+    private double limelightAngle = 0;
 
     // when the robot program starts
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -242,7 +255,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                () -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {
@@ -303,6 +316,41 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         m_field.setRobotPose(getState().Pose);
+
+        /*
+         * This example of adding Limelight is very simple and may not be sufficient for on-field use.
+         * Users typically need to provide a standard deviation that scales with the distance to target
+         * and changes with number of tags available.
+         *
+         * This example is sufficient to show that vision integration is possible, though exact implementation
+         * of how to use vision should be tuned per-robot and to the team's specification.
+         */
+        // if (!targeting) {
+        var driveState = getState();
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+        double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+            addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+        }
+
+        // LimelightHelpers.setPipelineIndex("", 1);
+        Set<Integer> targetIds = Set.of(2, 5, 10, 18, 21, 26);
+
+        // Get raw AprilTag/Fiducial data
+        RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
+
+        // Find the "Best" tag (Filtered -> Sorted -> First)
+        Optional<RawFiducial> bestTag = Arrays.stream(fiducials)
+            .filter(f -> targetIds.contains(f.id))
+            .min(Comparator.comparingDouble(f -> f.ambiguity)); // .min() finds the lowest value
+
+        if (bestTag.isPresent()) {
+            limelightAngle = bestTag.get().txnc;
+        }
+        // }
     }
 
     private void startSimThread() {
@@ -365,9 +413,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public double limelight_aim_proportional() {    
-        double targetingAngularVelocity = -aimController.calculate(LimelightHelpers.getTX("limelight")); // calculate velocity toward target
+    public Command aimAtHub() {
+        return (applyRequest(() -> 
+            drive.withVelocityX(0 * DriveConstants.MaxSpeed / 3) // Don't drive
+                .withVelocityY(0 * DriveConstants.MaxSpeed / 3) 
+                .withRotationalRate(-limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
+        ).repeatedly()).until(this::atHub);
+    }
+
+    public double limelight_aim_proportional() { 
+        double targetingAngularVelocity = -aimController.calculate(limelightAngle); // calculate velocity toward target
         targetingAngularVelocityPub.set(targetingAngularVelocity); // update values 
         return targetingAngularVelocity;
+    }
+
+    public boolean atHub() {
+        return Math.abs(limelightAngle) <= 2;
     }
 }
