@@ -148,7 +148,10 @@ public class ShooterSubsystem extends SubsystemBase {
             runOnce(() -> pickScoringFlywheelSetpoint())
             .andThen(run(() -> setFlywheelSpeed(currentFlywheelSetpoint))
             .until(this::ready)
-            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .andThen(run(() -> {
+                setFeederSpeed(ShooterConstants.feederSetpointRPS);
+                setFlywheelSpeed(currentFlywheelSetpoint);
+            }))
             .finallyDo(this::stopSystem)
             );
     }
