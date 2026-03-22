@@ -89,6 +89,20 @@ public class IntakeSubsystem extends SubsystemBase {
         return num;
     }
 
+    public double calculateJiggleExplosiveUp() {
+        double time = Timer.getFPGATimestamp();
+        double frequency = IntakeConstants.jiggleFrequency; // Hz
+        double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
+        double offset = IntakeConstants.jiggleOffset;    // Center position
+        double currentFraction = (Math.sin(2 * Math.PI * frequency * time) + 1) / 2;
+        double upFraction = IntakeConstants.upFraction;
+        double changed = currentFraction < upFraction ? (currentFraction / upFraction) * 0.5 : 0.5 + ((currentFraction - upFraction) / (1.0 - upFraction)) * 0.5;
+
+        double num = amplitude * Math.sin(changed * 360) + offset;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
     public void setRollerSpeed(double speed) {
         intakeRollers.set(speed);
         //rollerLoopController.setSetpoint(0.6, ControlType.kVelocity);

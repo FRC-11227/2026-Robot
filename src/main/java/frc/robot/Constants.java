@@ -88,6 +88,7 @@ public final class Constants {
     public static final double jiggleAmplitude = 0.06;
     public static final double jiggleOffset = 0.07;
     public static final double jiggleRollerSpeed = 0.5;
+    public static final double upFraction = 0.3;
   }
 
   public static class ShooterConstants {
