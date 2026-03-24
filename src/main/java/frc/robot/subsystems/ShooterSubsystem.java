@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -18,12 +19,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.CAN;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -145,6 +150,21 @@ public class ShooterSubsystem extends SubsystemBase {
     public Command pass(){
         return
             runOnce(() -> setFlywheelSpeed(ShooterConstants.passSpeed))
+            .until(this::ready)
+            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
+            .finallyDo(this::stopSystem);
+    }
+
+    public double determineManualShooterSpeed(DoubleSupplier triggerValue, CommandXboxController controller){
+        if(triggerValue.getAsDouble() < 0.2){ //less than 20% threashold
+            return 43.0; //close fixed shot
+        }
+        controller.setRumble(RumbleType.kBothRumble, triggerValue.getAsDouble());
+        return (triggerValue.getAsDouble() * 57.0) + 43.0; //between 43 and 100 rps when over threashold
+    }
+
+    public Command shootManual(DoubleSupplier triggerValue, CommandXboxController controller){
+        return runOnce(() -> setFlywheelSpeed(determineManualShooterSpeed(triggerValue, controller)))
             .until(this::ready)
             .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
             .finallyDo(this::stopSystem);

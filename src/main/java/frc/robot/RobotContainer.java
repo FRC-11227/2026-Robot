@@ -145,6 +145,7 @@ public class RobotContainer {
                 )
             )
         );
+        joystick.leftTrigger(0.01).whileTrue(shooter.shootManual(joystick::getRightTriggerAxis, joystick));
         joystick.b().whileTrue(Commands.run(() -> shooter.setFeederSpeed(-30.0)).finallyDo(() -> shooter.stopFeeder())); //reverse feeders for unjamming
 
 
