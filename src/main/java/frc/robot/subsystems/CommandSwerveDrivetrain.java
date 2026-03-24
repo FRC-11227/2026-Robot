@@ -80,6 +80,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private double limelightAngle = 0;
+    private double ll_gyro_target = 0;
+    private double prev_ll_timestamp = 0;
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -340,8 +342,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (bestTag.isPresent()) {
             limelightAngle = bestTag.get().txnc;
+            double timestamp = LimelightHelpers.getLatestResults("limelight").timestamp_LIMELIGHT_publish;
+            if( timestamp != prev_ll_timestamp ) {
+                prev_ll_timestamp = timestamp;
+                ll_gyro_target = headingDeg - limelightAngle;
+            }
+            SmartDashboard.putNumber("LimelightAngle", limelightAngle);
         }
-        // }
+
+        SmartDashboard.putNumber("AngularVelocity", getState().Speeds.omegaRadiansPerSecond);
     }
 
     private void startSimThread() {
@@ -404,20 +413,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
+    // TODO: Why isn't this stopping turning when cancelled?
     public Command aimAtHub() {
-        return (applyRequest(() -> 
-            drive.withVelocityX(0 * DriveConstants.MaxSpeed / 3) // Don't drive
-                .withVelocityY(0 * DriveConstants.MaxSpeed / 3) 
+        return applyRequest(() -> 
+            drive.withVelocityX(0) // Don't drive
+                .withVelocityY(0) 
                 .withRotationalRate(-limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
-        ).repeatedly()).until(this::atHub);
+        ).repeatedly().until(this::atHub);
     }
 
-    public double limelight_aim_proportional() { 
-        double targetingAngularVelocity = -aimController.calculate(limelightAngle); // calculate velocity toward target
-        return targetingAngularVelocity;
+    public double limelight_aim_proportional() {
+        // return ( ll_gyro_target - getState().Pose.getRotation().getDegrees() ) * 0.03;
+        // double kPFar = 0.02;
+        // double kPClose = 0.03;
+        // if( Math.abs( limelightAngle ) > 10 ) {
+        //     return limelightAngle * kPFar;
+        // } else {
+        //     return limelightAngle * kPClose;
+        // }
+        return -aimController.calculate(limelightAngle); // calculate velocity toward target
     }
 
     public boolean atHub() {
-        return Math.abs(limelightAngle) <= 2;
+        return Math.abs(limelightAngle) <= 2.5 && Math.abs(getState().Speeds.omegaRadiansPerSecond) < 0.2;
     }
 }
