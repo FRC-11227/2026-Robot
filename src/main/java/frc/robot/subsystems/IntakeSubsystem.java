@@ -10,6 +10,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -31,7 +34,7 @@ import frc.robot.Constants.ShooterConstants;
 public class IntakeSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
-    final SparkMax intakeRollers = new SparkMax(CAN.intakeRollers, MotorType.kBrushless);
+    public final SparkMax intakeRollers = new SparkMax(CAN.intakeRollers, MotorType.kBrushless);
     final SparkClosedLoopController rollerLoopController = intakeRollers.getClosedLoopController();
 
 
@@ -55,13 +58,15 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeAngleSlot0Configs.kD = IntakeConstants.arm_kD;
         //m_leftFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
         intakeAngle.getConfigurator().apply(intakeAngleSlot0Configs);
+        intakeAngle.getConfigurator().apply(intakeMotionMagic);
         SparkMaxConfig rollerConfig = new SparkMaxConfig();
 
 
         rollerConfig
             .voltageCompensation(12)
             .smartCurrentLimit(80)
-            .inverted(true);
+            .inverted(true)
+            .encoder.quadratureMeasurementPeriod(5).uvwMeasurementPeriod(8);
 
         rollerConfig.closedLoop
             .p(IntakeConstants.roller_kP)
@@ -82,6 +87,16 @@ public class IntakeSubsystem extends SubsystemBase {
         double frequency = IntakeConstants.jiggleFrequency; // Hz
         double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
         double offset = IntakeConstants.jiggleOffset;    // Center position
+        double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
+    public double calculateJiggleWithHeight(double height) {
+        double time = Timer.getFPGATimestamp();
+        double frequency = IntakeConstants.jiggleFrequency; // Hz
+        double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
+        double offset = -4*height;    // Center position
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
@@ -164,11 +179,24 @@ public class IntakeSubsystem extends SubsystemBase {
         return this.runEnd(() -> {
             setRollerSpeed(3800);
             setIntakePosition(IntakeConstants.armDown);
-            
         },
         () -> {
             stopIntakeAngle();
             stopRollers();
         });
+    }
+
+    public Command jiggleIntakeWithHeight(DoubleSupplier height) {
+        return this.runEnd(
+            () -> {
+                setIntakePosition(calculateJiggleWithHeight(height.getAsDouble()));
+                intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
+                // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
+            },
+            () -> {
+                stopIntakeAngle();
+                stopRollers();
+            }
+        );
     }
 }
