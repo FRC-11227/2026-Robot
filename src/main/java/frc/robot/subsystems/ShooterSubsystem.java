@@ -164,10 +164,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public Command shootManual(DoubleSupplier triggerValue, CommandXboxController controller){
-        return runOnce(() -> setFlywheelSpeed(determineManualShooterSpeed(triggerValue, controller)))
-            .until(this::ready)
-            .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
-            .finallyDo(this::stopSystem);
+        return run(() -> {
+                setFlywheelSpeed(determineManualShooterSpeed(triggerValue, controller));
+                setFeederSpeed(ShooterConstants.feederSetpointRPS);
+            })
+            .finallyDo(() -> {
+                this.stopSystem();
+                controller.setRumble(RumbleType.kBothRumble, 0);
+            });
     }
 
     public Command shootPauseSequence() {
