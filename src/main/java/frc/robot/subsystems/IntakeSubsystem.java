@@ -49,6 +49,9 @@ public class IntakeSubsystem extends SubsystemBase {
     
     final Slot0Configs intakeAngleSlot0Configs = new Slot0Configs();
 
+    double frequency = IntakeConstants.jiggleFrequency; // Hz
+    double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
+    double offset = IntakeConstants.jiggleOffset;    // Center position
     public IntakeSubsystem() {
         // TODO: Check intake angle configuration on tuner and set it using code
         intakeAngleSlot0Configs.kS = IntakeConstants.arm_kS;
@@ -84,9 +87,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double calculateJiggle() {
         double time = Timer.getFPGATimestamp();
-        double frequency = IntakeConstants.jiggleFrequency; // Hz
-        double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
-        double offset = IntakeConstants.jiggleOffset;    // Center position
+        
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
@@ -98,6 +99,30 @@ public class IntakeSubsystem extends SubsystemBase {
         double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
         double offset = -4*height;    // Center position
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
+    public double calculateJiggleExplosiveUp() {
+        double time = Timer.getFPGATimestamp();
+        double currentFraction = (Math.sin(2 * Math.PI * frequency * time) + 1) / 2;
+        double upFraction = IntakeConstants.upFraction;
+        double changed = currentFraction < upFraction ? (currentFraction / upFraction) * 0.5 : 0.5 + ((currentFraction - upFraction) / (1.0 - upFraction)) * 0.5;
+        double num = amplitude * Math.sin(changed * 2 * Math.PI) + offset;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
+    public double calculateJiggleTriangle() {
+        double time = Timer.getFPGATimestamp();
+        double num = 2 / Math.PI * amplitude * Math.asin(Math.sin((2 * Math.PI * time) / (1 / frequency))) + offset;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
+    public double calculateJiggleSquare() {
+        double time = Timer.getFPGATimestamp();
+        double num = Math.floor(time / frequency) % 2 == 0 ? amplitude : -amplitude;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
     }
