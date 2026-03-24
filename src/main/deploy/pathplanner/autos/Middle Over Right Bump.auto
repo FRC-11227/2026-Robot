@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Shoot 5s"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Durham Full Middle Right Path"
+            "pathName": "Middle Over Right Bump"
           }
         },
         {
