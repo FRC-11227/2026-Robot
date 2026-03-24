@@ -75,8 +75,9 @@ public class RobotContainer {
         });
 
         NamedCommands.registerCommand("Align", drivetrain.aimAtHub());
-        NamedCommands.registerCommand("Shoot", shooter.autoShootSequence().withTimeout(5));
-        NamedCommands.registerCommand("Intake", intake.intakeBalls());
+        NamedCommands.registerCommand("Shoot 5s", shooter.autoShootSequence().withTimeout(5));
+        NamedCommands.registerCommand("Shoot 1s", shooter.autoShootSequence().withTimeout(1));
+        NamedCommands.registerCommand("Intake", Commands.runOnce(() -> {intake.setRollerSpeed(3800); intake.setIntakePosition(IntakeConstants.armDown);}));
         NamedCommands.registerCommand("Stop Intake", Commands.runOnce(() -> {intake.stopIntakeAngle(); intake.stopRollers();}));
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -110,43 +111,43 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(shooter.shootSequence());
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
 
-        joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed));
-        joystick.a().onTrue(intake.intakeDown(IntakeConstants.intakeRotateSpeed));
+        //joystick.rightTrigger(0.5).whileTrue(shooter.pass());
+        
+        
+        // joystick.leftTrigger(0.5).whileTrue(drivetrain.applyRequest(() -> 
+        //     drive.withVelocityX(0 * DriveConstants.MaxSpeed / 3) // Don't drive
+        //         .withVelocityY(0 * DriveConstants.MaxSpeed / 3) 
+        //         .withRotationalRate(-drivetrain.limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
+        // ).finallyDo(() -> LimelightHelpers.setPipelineIndex("", 0)));
+        
+        //X-lock while X button pressed
+        joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        joystick.rightTrigger(0.5).whileTrue(shooter.pass());
+        // Reset the field-centric heading on Dpad up press
+        joystick.povUp().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        //intake control
+        joystick.y().onTrue(intake.intakeUp(IntakeConstants.intakeRotateSpeed)); //stow intake with Y
+        joystick.leftBumper().whileTrue(intake.intakeBalls()); //intake down and intaking with left bumper
+        joystick.a().whileTrue(Commands.run(() -> intake.intakeRollers.set(-0.7)).finallyDo(() -> intake.stopRollers())); //outtake with B
+        joystick.leftTrigger(0.05).whileTrue(intake.jiggleIntakeWithHeight(joystick::getLeftTriggerAxis));
+        
+        //shooter control
         joystick.rightBumper().whileTrue(
             drivetrain.aimAtHub().andThen(
                 Commands.parallel(
-                    drivetrain.applyRequest(() -> brake),
-                    shooter.autoShootSequence(),
-                    intake.jiggleIntake()
+                    drivetrain.applyRequest(() -> idle),
+                    shooter.autoShootSequence()
                 )
             )
         );
-        joystick.leftBumper().whileTrue(intake.intakeBalls());
-        joystick.b().whileTrue(intake.spinRollers(-0.7));
-        
-        joystick.leftTrigger(0.5).whileTrue(drivetrain.applyRequest(() -> 
-            drive.withVelocityX(0 * DriveConstants.MaxSpeed / 3) // Don't drive
-                .withVelocityY(0 * DriveConstants.MaxSpeed / 3) 
-                .withRotationalRate(-drivetrain.limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
-        ).finallyDo(() -> LimelightHelpers.setPipelineIndex("", 0)));
+        joystick.b().whileTrue(Commands.run(() -> shooter.setFeederSpeed(-30.0)).finallyDo(() -> shooter.stopFeeder())); //reverse feeders for unjamming
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // Reset the field-centric heading on left bumper press.
-        joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
