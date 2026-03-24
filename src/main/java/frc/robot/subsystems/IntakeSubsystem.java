@@ -87,7 +87,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double calculateJiggle() {
         double time = Timer.getFPGATimestamp();
-        
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
