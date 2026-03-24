@@ -19,7 +19,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Durham Full Middle Left Path"
+            "pathName": "Full Middle Left Path 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Middle Left Path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Middle Left Path 3"
           }
         },
         {

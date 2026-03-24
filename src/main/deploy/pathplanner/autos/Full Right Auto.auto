@@ -19,7 +19,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Durham Full Right Path"
+            "pathName": "Full Right Path 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 4"
           }
         },
         {
