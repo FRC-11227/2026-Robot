@@ -11,7 +11,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -19,11 +18,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -92,15 +86,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
         currentFlywheelSetpoint = 0.0;
         limelightDistance = 0;
+
+        SmartDashboard.putNumber("FlywheelSetpointRPS", 60.0);
     } 
 
     public void setFlywheelSpeed(double rps) {
-        double errorRight = m_rightFlywheelFeeder.getClosedLoopError().getValueAsDouble();
-        double errorLeft = m_leftFlywheelFeeder.getClosedLoopError().getValueAsDouble();
-        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorRight * ShooterConstants.feederErrorGain));
-        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps + errorLeft * ShooterConstants.feederErrorGain));
-        SmartDashboard.putNumber("rightFlywheel", rps + errorRight * ShooterConstants.feederErrorGain);
-        SmartDashboard.putNumber("leftFlywheel", rps + errorLeft * ShooterConstants.feederErrorGain);
+        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
     }
 
     public void setFeederSpeed(double rps) {
@@ -144,7 +136,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command shootSequence() {
         return
-            runOnce(() -> setFlywheelSpeed(75))
+            runOnce(() -> setFlywheelSpeed(SmartDashboard.getNumber("FlywheelSetpointRPS", 60.0)))
             .until(this::ready)
             .andThen(run(() -> setFeederSpeed(ShooterConstants.feederSetpointRPS)))
             .finallyDo(this::stopSystem);
