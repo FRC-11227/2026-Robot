@@ -15,6 +15,7 @@ import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -61,6 +62,10 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run(); 
+
+        SmartDashboard.putString("Phase", match_timer.get_current_phase().name());
+        SmartDashboard.putNumber("Shift Remaining", match_timer.seconds_left_in_shift());
+        SmartDashboard.putNumber("Match Remaining", match_timer.end_of_match - match_timer.match_seconds_elapsed());
     }
 
     @Override
@@ -74,6 +79,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        match_timer.auto_init();
+        
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
@@ -89,6 +96,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        match_timer.tele_init();
+
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }

@@ -429,7 +429,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Rotation2d current = getState().Pose.getRotation();
         double errorDegs = target.minus(current).getDegrees();
         double wrappedError = MathUtil.inputModulus( errorDegs, -180, 180 );
-        return wrappedError * DriveConstants.LIMELIGHT_AIM_KP;
+        return -wrappedError * DriveConstants.LIMELIGHT_AIM_KP;
         
         // double kPFar = 0.02;
         // double kPClose = 0.03;
