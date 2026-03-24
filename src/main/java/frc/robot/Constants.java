@@ -48,8 +48,6 @@ public final class Constants {
   public static class DriveConstants {
     public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
-
   }
 
   public static class IntakeConstants {
@@ -97,7 +95,7 @@ public final class Constants {
 
     public static final double jiggleFrequency = 1;
     public static final double jiggleAmplitude = 1;
-    public static final double jiggleOffset = -3.5;
+    public static final double jiggleOffset = -2;
     public static final double jiggleRollerSpeed = 0.5;
   }
 
@@ -114,19 +112,29 @@ public final class Constants {
     public static final double feeder_kI = 0;
     public static final double feeder_kD = 0;
 
-    public static final double feederSetpointRPS = 30;
+    public static final double feederAcceleration = 500;
+
+    public static final double feederSetpointRPS = 60;
     public static final double passSpeed = 80;
 
     public static final double feederErrorGain = 5.0;
-    public static final double feederErrorTolerance = 1.0;
 
-    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
+    public static final InterpolatingDoubleTreeMap lerpTableOld = InterpolatingDoubleTreeMap.ofEntries(
       Map.entry(1.57, 47.0),
       Map.entry(2.76, 55.0),
       Map.entry(3.0, 57.0),
       Map.entry(3.13, 60.0),
       Map.entry(3.8, 64.5),
       Map.entry(5.0, 73.0)
+    );
+
+    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
+      Map.entry(1.01,43.0),
+      Map.entry(5.2, 75.0),
+      Map.entry(3.7,68.0),
+      Map.entry(3.0, 61.0),
+      Map.entry(2.23, 55.0),
+      Map.entry(1.8, 50.0)
     );
   }
 
