@@ -5,27 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 1"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Full Left Path 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Full Left Path 2"
+            "name": "Shoot 1s"
           }
         },
         {
@@ -37,7 +31,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Full Left Path 3"
+            "pathName": "Full Right Path 2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 3"
           }
         },
         {
@@ -49,19 +55,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Full Left Path 4"
+            "pathName": "Full Right Path 4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 5.0
+            "name": "Shoot 5s"
           }
         }
       ]

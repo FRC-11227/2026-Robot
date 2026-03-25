@@ -74,7 +74,9 @@ public class RobotContainer {
             }
         });
 
-        NamedCommands.registerCommand("Align", drivetrain.aimAtHub());
+        final var idle = new SwerveRequest.Idle();
+
+        NamedCommands.registerCommand("Align", drivetrain.aimAtHub().andThen(Commands.runOnce(() -> drivetrain.applyRequest(() -> idle))));
         NamedCommands.registerCommand("Shoot 5s", shooter.autoShootSequence().withTimeout(5));
         NamedCommands.registerCommand("Shoot 1s", shooter.autoShootSequence().withTimeout(1));
         NamedCommands.registerCommand("Intake", Commands.runOnce(() -> {intake.setRollerSpeed(3800); intake.setIntakePosition(IntakeConstants.armDown);}));
