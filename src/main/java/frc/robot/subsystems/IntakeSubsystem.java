@@ -102,6 +102,13 @@ public class IntakeSubsystem extends SubsystemBase {
         return num;
     }
 
+    public double calculateJiggleSquareWithHeight(double height) {
+        double time = Timer.getFPGATimestamp();
+        double num = Math.floor(time / IntakeConstants.jiggleFrequency) % 2 == 0 ? IntakeConstants.jiggleAmplitude + height : -IntakeConstants.jiggleAmplitude + height;
+        SmartDashboard.putNumber("JiggleSetpoint", num);
+        return num;
+    }
+
     public void setRollerSpeed(double speed) {
         // intakeRollers.set(speed);
         rollerLoopController.setSetpoint(speed, ControlType.kVelocity);
@@ -189,7 +196,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command jiggleIntakeWithHeight(DoubleSupplier height) {
         return this.runEnd(
             () -> {
-                setIntakePosition(calculateJiggleWithHeight(height.getAsDouble()));
+                setIntakePosition(calculateJiggleSquareWithHeight(height.getAsDouble()));
                 intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
                 // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
             },
