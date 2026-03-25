@@ -343,11 +343,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if (bestTag.isPresent()) {
             limelightAngle = bestTag.get().txnc;
-            double timestamp = LimelightHelpers.getLatestResults("limelight").timestamp_LIMELIGHT_publish;
+            double timestamp = limelightAngle;
             if( timestamp != PrevLimelightTimestamp) {
                 //update gyro setpoint from limelight if new data is available
                 PrevLimelightTimestamp = timestamp;
                 LimelightGyroSetpoint = headingDeg - limelightAngle;
+                SmartDashboard.putNumber("Gyro setpoint", LimelightGyroSetpoint);
             }
             SmartDashboard.putNumber("LimelightAngle", limelightAngle);
         }
@@ -420,7 +421,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return applyRequest(() -> 
             drive.withVelocityX(0) // Don't drive
                 .withVelocityY(0) 
-                .withRotationalRate(-limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
+                .withRotationalRate(limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
         ).repeatedly().until(this::atHub);
     }
 
@@ -429,7 +430,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Rotation2d current = getState().Pose.getRotation();
         double errorDegs = target.minus(current).getDegrees();
         double wrappedError = MathUtil.inputModulus( errorDegs, -180, 180 );
-        return -wrappedError * DriveConstants.LIMELIGHT_AIM_KP;
+        return -aimController.calculate(wrappedError);
         
         // double kPFar = 0.02;
         // double kPClose = 0.03;
