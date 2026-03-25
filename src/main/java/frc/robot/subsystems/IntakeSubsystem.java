@@ -196,7 +196,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command jiggleIntakeWithHeight(DoubleSupplier height) {
         return this.runEnd(
             () -> {
-                setIntakePosition(calculateJiggleSquareWithHeight(height.getAsDouble()));
+                setIntakeJigglePosition(calculateJiggleSquareWithHeight(height.getAsDouble())); //set position without motion magic
                 intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
                 // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
             },
