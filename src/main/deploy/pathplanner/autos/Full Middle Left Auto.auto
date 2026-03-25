@@ -5,39 +5,57 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Backup and angle"
+            "name": "Shoot"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot 1s"
+            "waitTime": 5.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect over left bump"
+            "pathName": "Full Middle Left Path 1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Align"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Middle Left Path 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot 5s"
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Middle Left Path 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         }
       ]
