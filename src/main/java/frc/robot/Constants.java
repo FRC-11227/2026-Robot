@@ -72,8 +72,8 @@ public final class Constants {
     //public static final double armUp= 0.183195;
     //public static final double armDown = 0.181;
    
-    public static final double armCruiseVelocity = 48;  // rot/s  — tune this
-    public static final double armAcceleration = 32;  // rot/s² — tune this
+    public static final double armCruiseVelocity = 72;  // rot/s  — tune this
+    public static final double armAcceleration = 48;  // rot/s² — tune this
     public static final double armJerk = 0.0;  // rot/s³ — 0 disables S-curve smoothing
     public static final double armGearRatio = 24.7;
 
@@ -97,7 +97,7 @@ public final class Constants {
     
     public static final double intakingPosition = -0.01;
 
-    public static final double jiggleFrequency = 1;
+    public static final double jiggleFrequency = 1.7;
     public static final double jiggleAmplitude = 1;
     public static final double jiggleOffset = -2;
     public static final double jiggleRollerSpeed = 0.5;

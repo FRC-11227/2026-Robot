@@ -7,25 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot 5s"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle Over Right Bump"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Align"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Shoot 1s"
           }
         }
       ]

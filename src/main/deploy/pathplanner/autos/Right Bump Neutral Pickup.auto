@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Backup and angle"
+            "pathName": "Full Right Path 1"
           }
         },
         {
@@ -23,9 +23,39 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Collect over left bump"
+            "pathName": "Full Right Path 2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Full Right Path 4"
           }
         },
         {
