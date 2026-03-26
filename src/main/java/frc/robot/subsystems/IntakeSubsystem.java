@@ -184,7 +184,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command intakeBalls() {
         return this.runEnd(() -> {
-            setRollerSpeed(3800);
+            setRollerSpeed(IntakeConstants.intakingRollerSpeedRPM);
             setIntakePosition(IntakeConstants.armDown);
         },
         () -> {

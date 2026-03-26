@@ -91,6 +91,10 @@ public final class Constants {
     public static final int intakeDownDirection = 1;
 
     public static final double intakingRollerSpeed = 0.8;
+
+    //free speed 6000rpm assume 90% efficiency and run at 80% speed which is under instability threashold
+    public static final double intakingRollerSpeedRPM = 4320;
+    
     public static final double intakingPosition = -0.01;
 
     public static final double jiggleFrequency = 1;
