@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
+    private HttpCamera limelightStream = new HttpCamera("limelight (CameraServer)", "http://limelight.local:5800/stream.mjpg");
+
     private final RobotContainer m_robotContainer;
 
     /* log and replay timestamp and joystick data */
@@ -39,7 +41,6 @@ public class Robot extends TimedRobot {
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
         //start camera server for dashboard
-        HttpCamera limelightStream = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
         limelightStream.setResolution(240, 160);
         CameraServer.startAutomaticCapture(limelightStream);
 
