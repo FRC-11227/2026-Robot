@@ -137,6 +137,7 @@ public class RobotContainer {
         joystick.leftBumper().whileTrue(intake.intakeBalls()); //intake down and intaking with left bumper
         joystick.a().whileTrue(Commands.run(() -> intake.intakeRollers.set(-0.7)).finallyDo(() -> intake.stopRollers())); //outtake with B
         joystick.leftTrigger(0.05).whileTrue(intake.jiggleIntakeWithHeight(joystick::getLeftTriggerAxis));
+        joystick.povDown().onTrue(intake.zeroIntake());
         
         //shooter control
         joystick.rightBumper().whileTrue(

@@ -161,6 +161,12 @@ public class IntakeSubsystem extends SubsystemBase {
             .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));*/
     }
 
+    public Command zeroIntake(){
+        return this.run(() -> setIntakeAngleSpeed(IntakeConstants.intakeRotateSpeed))
+            .until(this::intakeIsAtHardStop)
+            .andThen(this.runOnce(() -> stopIntakeAngle()).andThen(runOnce(() -> intakeAngle.setPosition(0))));
+    }
+
     public Command intakeUp(double speed) {
         //swap out for .setIntakePosition
         return this.run(() ->setIntakePosition(IntakeConstants.armUp));
