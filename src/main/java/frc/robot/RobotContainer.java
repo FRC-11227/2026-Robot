@@ -79,7 +79,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Align", drivetrain.aimAtHub().andThen(Commands.runOnce(() -> drivetrain.applyRequest(() -> idle))));
         NamedCommands.registerCommand("Shoot 5s", Commands.parallel(shooter.autoShootSequence().withTimeout(5), intake.jiggleIntakeWithHeight(IntakeConstants.jiggleOffset)));
         NamedCommands.registerCommand("Shoot 1s", shooter.autoShootSequence().withTimeout(1));
-        NamedCommands.registerCommand("Intake", Commands.runOnce(() -> {intake.setRollerSpeed(3800); intake.setIntakePosition(IntakeConstants.armDown);}));
+        NamedCommands.registerCommand("Intake", Commands.runOnce(() -> {intake.setRollerSpeed(IntakeConstants.intakingRollerSpeedRPM); intake.setIntakePosition(IntakeConstants.armDown);}));
         NamedCommands.registerCommand("Stop Intake", Commands.runOnce(() -> {intake.stopIntakeAngle(); intake.stopRollers();}));
 
         autoChooser = AutoBuilder.buildAutoChooser();
