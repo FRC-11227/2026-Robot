@@ -128,7 +128,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setIntakeJigglePosition(double position) {
-        intakeAngle.setControl(positionVoltageOut.withPosition(position));
+        intakeAngle.setControl(motionMagicVoltageOut.withPosition(position));
+        // intakeAngle.setControl(positionVoltageOut.withPosition(position));
     }
 
     public void stopIntakeAngle() {
@@ -196,7 +197,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command jiggleIntakeWithHeight(DoubleSupplier height) {
         return this.runEnd(
             () -> {
-                setIntakeJigglePosition(calculateJiggleSquareWithHeight(height.getAsDouble())); //set position without motion magic
+                setIntakeJigglePosition(calculateJiggleSquareWithHeight(height.getAsDouble()*-4)); //set position without motion magic
                 intakeRollers.set(IntakeConstants.jiggleRollerSpeed);
                 // setRollerSpeed(IntakeConstants.jiggleRollerSpeed);
             },
