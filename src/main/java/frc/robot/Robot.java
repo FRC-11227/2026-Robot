@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Phase", match_timer.get_current_phase().name());
         SmartDashboard.putNumber("Shift Remaining", match_timer.seconds_left_in_shift());
         SmartDashboard.putNumber("Match Remaining", match_timer.end_of_match - match_timer.match_seconds_elapsed());
+        SmartDashboard.putBoolean("GGD Shift", match_timer.hub_active_preview());
     }
 
     @Override

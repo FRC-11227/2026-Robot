@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -99,7 +100,7 @@ public final class Constants {
 
     public static final double jiggleFrequency = 0.5;
     public static final double jiggleAmplitude = 1;
-    public static final double jiggleOffset = -2;
+    public static final DoubleSupplier jiggleOffset = () -> 0.5;
     public static final double jiggleRollerSpeed = 0.5;
   }
 

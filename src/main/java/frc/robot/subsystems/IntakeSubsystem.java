@@ -86,7 +86,7 @@ public class IntakeSubsystem extends SubsystemBase {
         double time = Timer.getFPGATimestamp();
         double frequency = IntakeConstants.jiggleFrequency; // Hz
         double amplitude = IntakeConstants.jiggleAmplitude; // Range of motion
-        double offset = IntakeConstants.jiggleOffset;    // Center position
+        double offset = IntakeConstants.jiggleOffset.getAsDouble();    // Center position
         double num = amplitude * Math.sin(2 * Math.PI * frequency * time) + offset;
         SmartDashboard.putNumber("JiggleSetpoint", num);
         return num;
