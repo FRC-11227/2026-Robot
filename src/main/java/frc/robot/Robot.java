@@ -7,6 +7,8 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Strategy;
@@ -35,6 +37,11 @@ public class Robot extends TimedRobot {
 
         // Expose deploy directory for Elastic layout download
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+
+        //start camera server for dashboard
+        HttpCamera limelightStream = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpg");
+        limelightStream.setResolution(240, 160);
+        CameraServer.startAutomaticCapture(limelightStream);
 
         Epilogue.configure(config -> {
             // Log only to disk, instead of the default NetworkTables logging
