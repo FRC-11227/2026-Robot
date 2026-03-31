@@ -33,12 +33,12 @@ public final class Constants {
   public static class CAN {
     // CANivore bus
     public static final int intakeAngle = 14;
-    public static final int leftFlywheelLead = 16;
-    public static final int leftFlywheelFollow = 17;
+    public static final int leftFlywheelOne = 16;
+    public static final int leftFlywheelTwo = 17;
     public static final int leftFLywheelFeeder = 18;
 
-    public static final int rightFlywheelLead = 19;
-    public static final int rightFlywheelFollow = 20;
+    public static final int rightFlywheelOne = 19;
+    public static final int rightFlywheelTwo = 20;
     public static final int rightFlywheelFeeder = 21;
 
     // RIO bus

@@ -10,11 +10,9 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.LimelightHelpers;
@@ -28,18 +26,17 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.CAN;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
-    final TalonFX m_leftFlywheelLead = new TalonFX(CAN.leftFlywheelLead, kCanivoreBus);
-    final TalonFX m_leftFlywheelFollow = new TalonFX(CAN.leftFlywheelFollow, kCanivoreBus);
+    final TalonFX m_leftFlywheelOne = new TalonFX(CAN.leftFlywheelOne, kCanivoreBus);
+    final TalonFX m_leftFlywheelTwo = new TalonFX(CAN.leftFlywheelTwo, kCanivoreBus);
     final TalonFX m_leftFlywheelFeeder = new TalonFX(CAN.leftFLywheelFeeder, kCanivoreBus);
 
-    final TalonFX m_rightFlywheelLead = new TalonFX(CAN.rightFlywheelLead, kCanivoreBus);
-    final TalonFX m_rightFlywheelFollow = new TalonFX(CAN.rightFlywheelFollow, kCanivoreBus);
+    final TalonFX m_rightFlywheelOne = new TalonFX(CAN.rightFlywheelOne, kCanivoreBus);
+    final TalonFX m_rightFlywheelTwo = new TalonFX(CAN.rightFlywheelTwo, kCanivoreBus);
     final TalonFX m_rightFlywheelFeeder = new TalonFX(CAN.rightFlywheelFeeder, kCanivoreBus);
 
     final VelocityTorqueCurrentFOC m_velocityTorqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
@@ -60,25 +57,23 @@ public class ShooterSubsystem extends SubsystemBase {
         flywheelSlot0Configs.kI = ShooterConstants.flywheel_kI;
         flywheelSlot0Configs.kD = ShooterConstants.flywheel_kD;
 
-        m_leftFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
-        m_leftFlywheelFollow.getConfigurator().apply(flywheelSlot0Configs);
-        m_rightFlywheelLead.getConfigurator().apply(flywheelSlot0Configs);
-        m_rightFlywheelFollow.getConfigurator().apply(flywheelSlot0Configs);
+        m_leftFlywheelOne.getConfigurator().apply(flywheelSlot0Configs);
+        m_leftFlywheelTwo.getConfigurator().apply(flywheelSlot0Configs);
+        m_rightFlywheelOne.getConfigurator().apply(flywheelSlot0Configs);
+        m_rightFlywheelTwo.getConfigurator().apply(flywheelSlot0Configs);
 
-        m_rightFlywheelLead.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+        m_rightFlywheelOne.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
         m_rightFlywheelFeeder.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
 
-        m_leftFlywheelLead.setNeutralMode(NeutralModeValue.Coast);
-        m_leftFlywheelFollow.setNeutralMode(NeutralModeValue.Coast);
-        m_rightFlywheelLead.setNeutralMode(NeutralModeValue.Coast);
-        m_rightFlywheelFollow.setNeutralMode(NeutralModeValue.Coast);
+        m_leftFlywheelOne.setNeutralMode(NeutralModeValue.Coast);
+        m_leftFlywheelTwo.setNeutralMode(NeutralModeValue.Coast);
+        m_rightFlywheelOne.setNeutralMode(NeutralModeValue.Coast);
+        m_rightFlywheelTwo.setNeutralMode(NeutralModeValue.Coast);
 
         m_leftFlywheelFeeder.setNeutralMode(NeutralModeValue.Brake);
         m_rightFlywheelFeeder.setNeutralMode(NeutralModeValue.Brake);
 
         // set follow flywheels to follow their leader motors
-        m_rightFlywheelFollow.setControl(new Follower(m_rightFlywheelLead.getDeviceID(), MotorAlignmentValue.Aligned));
-        m_leftFlywheelFollow.setControl(new Follower(m_leftFlywheelLead.getDeviceID(), MotorAlignmentValue.Aligned));
 
         feederSlot0Configs.kS = ShooterConstants.feeder_kS;
         feederSlot0Configs.kV = ShooterConstants.feeder_kV;
@@ -96,8 +91,10 @@ public class ShooterSubsystem extends SubsystemBase {
     } 
 
     public void setFlywheelSpeed(double rps) {
-        m_rightFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
-        m_leftFlywheelLead.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_rightFlywheelOne.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_rightFlywheelTwo.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheelOne.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheelTwo.setControl(m_velocityTorqueRequest.withVelocity(rps));
     }
 
     public void setFeederSpeed(double rps) {
@@ -106,8 +103,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void stopFlywheels() {
-        m_leftFlywheelLead.stopMotor();
-        m_rightFlywheelLead.stopMotor();
+        m_leftFlywheelOne.stopMotor();
+        m_leftFlywheelTwo.stopMotor();
+        m_rightFlywheelOne.stopMotor();
+        m_rightFlywheelTwo.stopMotor();
     }
 
     public void stopFeeder() {
@@ -121,8 +120,10 @@ public class ShooterSubsystem extends SubsystemBase {
     } 
 
     public boolean flywheelAtVelocity(double rps, double tolerance) {
-        return m_rightFlywheelLead.getVelocity().isNear(rps, tolerance)
-            && m_leftFlywheelLead.getVelocity().isNear(rps, tolerance);
+        return m_rightFlywheelOne.getVelocity().isNear(rps, tolerance)
+            && m_leftFlywheelOne.getVelocity().isNear(rps, tolerance) 
+            && m_leftFlywheelTwo.getVelocity().isNear(rps, tolerance) 
+            && m_rightFlywheelTwo.getVelocity().isNear(rps, tolerance);
     }
 
     public boolean ready() {
@@ -207,6 +208,6 @@ public class ShooterSubsystem extends SubsystemBase {
         updateDistanceToHub();
         SmartDashboard.putNumber("LimelightDistance", limelightDistance);
         SmartDashboard.putNumber("FlywheelSetpoint", currentFlywheelSetpoint);
-        SmartDashboard.putNumber("LeftFlywheelVelocity", m_leftFlywheelLead.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("LeftFlywheelVelocity", m_leftFlywheelOne.getVelocity().getValueAsDouble());
     }
 }
