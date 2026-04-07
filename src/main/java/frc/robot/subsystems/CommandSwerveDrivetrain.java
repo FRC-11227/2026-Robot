@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -11,6 +14,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,6 +22,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,6 +30,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -37,7 +43,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -69,16 +77,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final Field2d m_field = new Field2d();
 
-    private static PIDController aimController = new PIDController(0.04, 0, 0);
+    private static PIDController aimController = new PIDController(0.03, 0, 0.002);
 
-    // when the robot program starts
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    // Get the table within that instance that contains the data. There can
-    // be as many tables as you like and exist to make it easier to organize
-    // your data. In this case, it's a table called datatable.
-    NetworkTable table = inst.getTable("datatable");
-    // Start publishing topics within that table that correspond to the velocity
-    DoublePublisher targetingAngularVelocityPub = table.getDoubleTopic("targetingAngularVelocity").publish();
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(DriveConstants.MaxSpeed * 0.05).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.05) // Add
+                                                                                                                       // a
+                                                                                                                       // 5%
+                                                                                                                       // deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+    private double limelightAngle = 0;
+    private double LimelightGyroSetpoint = 0;
+    private double PrevLimelightTimestamp = 0;
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -254,7 +264,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                    () -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
                     this // Subsystem for requirements
             );
         } catch (Exception ex) {
@@ -325,6 +335,54 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         m_field.setRobotPose(getState().Pose);
+
+        /*
+         * This example of adding Limelight is very simple and may not be sufficient for
+         * on-field use.
+         * Users typically need to provide a standard deviation that scales with the
+         * distance to target
+         * and changes with number of tags available.
+         *
+         * This example is sufficient to show that vision integration is possible,
+         * though exact implementation
+         * of how to use vision should be tuned per-robot and to the team's
+         * specification.
+         */
+        // if (!targeting) {
+        var driveState = getState();
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+        double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+            addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+        }
+
+        // LimelightHelpers.setPipelineIndex("", 1);
+        Set<Integer> targetIds = Set.of(2, 5, 10, 18, 21, 26);
+
+        // Get raw AprilTag/Fiducial data
+        RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
+
+        // Find the "Best" tag (Filtered -> Sorted -> First)
+        Optional<RawFiducial> bestTag = Arrays.stream(fiducials)
+                .filter(f -> targetIds.contains(f.id))
+                .min(Comparator.comparingDouble(f -> f.ambiguity)); // .min() finds the lowest value
+
+        if (bestTag.isPresent()) {
+            limelightAngle = bestTag.get().txnc;
+            double timestamp = limelightAngle;
+            if (timestamp != PrevLimelightTimestamp) {
+                // update gyro setpoint from limelight if new data is available
+                PrevLimelightTimestamp = timestamp;
+                LimelightGyroSetpoint = headingDeg - limelightAngle;
+                SmartDashboard.putNumber("Gyro setpoint", LimelightGyroSetpoint);
+            }
+            SmartDashboard.putNumber("LimelightAngle", limelightAngle);
+        }
+
+        SmartDashboard.putNumber("AngularVelocity", getState().Speeds.omegaRadiansPerSecond);
     }
 
     private void startSimThread() {
@@ -413,13 +471,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
+    // TODO: Why isn't this stopping turning when cancelled?
+    public Command aimAtHub() {
+        return applyRequest(() -> drive.withVelocityX(0) // Don't drive
+                .withVelocityY(0)
+                .withRotationalRate(limelight_aim_proportional() * DriveConstants.MaxAngularRate) // turn toward target
+        ).repeatedly().until(this::atHub);
+    }
+
     public double limelight_aim_proportional() {
-        LimelightHelpers.setPipelineIndex("", 1);
-        double targetingAngularVelocity = -aimController.calculate(LimelightHelpers.getTX("limelight")); // calculate
-                                                                                                         // velocity
-                                                                                                         // toward
-                                                                                                         // target
-        targetingAngularVelocityPub.set(targetingAngularVelocity); // update values
-        return targetingAngularVelocity;
+        Rotation2d target = Rotation2d.fromDegrees(LimelightGyroSetpoint);
+        Rotation2d current = getState().Pose.getRotation();
+        double errorDegs = target.minus(current).getDegrees();
+        double wrappedError = MathUtil.inputModulus(errorDegs, -180, 180);
+        return -aimController.calculate(wrappedError);
+
+        // double kPFar = 0.02;
+        // double kPClose = 0.03;
+        // if( Math.abs( limelightAngle ) > 10 ) {
+        // return limelightAngle * kPFar;
+        // } else {
+        // return limelightAngle * kPClose;
+        // }
+
+        // return -aimController.calculate(limelightAngle); // calculate velocity toward
+        // target
+    }
+
+    public boolean atHub() {
+        return Math.abs(limelightAngle) <= 2.5 && Math.abs(getState().Speeds.omegaRadiansPerSecond) < 0.2;
     }
 }

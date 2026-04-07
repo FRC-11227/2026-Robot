@@ -7,11 +7,13 @@
         {
           "type": "named",
           "data": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Example Auto.auto
-            "pathName": "Allign to nets"
-========
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot 1s"
->>>>>>>> origin/Unfollow-shooter:src/main/deploy/pathplanner/autos/Shoot.auto
           }
         }
       ]

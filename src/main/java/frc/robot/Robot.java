@@ -6,8 +6,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Strategy;
@@ -16,6 +17,9 @@ import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -63,27 +67,10 @@ public class Robot extends TimedRobot {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
 
-        /*
-         * This example of adding Limelight is very simple and may not be sufficient for
-         * on-field use.
-         * Users typically need to provide a standard deviation that scales with the
-         * distance to target
-         * and changes with number of tags available.
-         *
-         * This example is sufficient to show that vision integration is possible,
-         * though exact implementation
-         * of how to use vision should be tuned per-robot and to the team's
-         * specification.
-         */
-        var driveState = m_robotContainer.drivetrain.getState();
-        double headingDeg = driveState.Pose.getRotation().getDegrees();
-        double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-            m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
-        }
+        SmartDashboard.putString("Phase", match_timer.get_current_phase().name());
+        SmartDashboard.putNumber("Shift Remaining", match_timer.seconds_left_in_shift());
+        SmartDashboard.putNumber("Match Remaining", match_timer.end_of_match - match_timer.match_seconds_elapsed());
+        SmartDashboard.putBoolean("GGD Shift", match_timer.hub_active_preview());
     }
 
     @Override
@@ -100,6 +87,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        match_timer.auto_init();
+
+        Shuffleboard.selectTab(1);
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
@@ -117,6 +108,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        match_timer.tele_init();
+
+        Shuffleboard.selectTab(0);
+
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
