@@ -7,6 +7,10 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.networktables.StringTopic;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.epilogue.Epilogue;
@@ -17,8 +21,6 @@ import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,7 +29,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
-
+    private static final StringTopic selectedTabTopic = NetworkTableInstance.getDefault().getStringTopic("/Elastic/SelectedTab");
+    private static final StringPublisher selectedTabPublisher = selectedTabTopic.publish(PubSubOption.keepDuplicates(true));
 
     private final RobotContainer m_robotContainer;
 
@@ -88,7 +91,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         match_timer.auto_init();
 
-        Shuffleboard.selectTab(1);
+        selectedTabPublisher.set("Autonomous");
         
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -107,7 +110,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         match_timer.tele_init();
         
-        Shuffleboard.selectTab(0);
+        selectedTabPublisher.set("Teleoperated");
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);

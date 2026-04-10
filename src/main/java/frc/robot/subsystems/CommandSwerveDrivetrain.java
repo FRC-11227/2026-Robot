@@ -321,6 +321,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          */
         // if (!targeting) {
         var driveState = getState();
+        double speedMagnitude = Math.sqrt((driveState.Speeds.vxMetersPerSecond*driveState.Speeds.vxMetersPerSecond)+(driveState.Speeds.vxMetersPerSecond*driveState.Speeds.vxMetersPerSecond));
+        SmartDashboard.putNumber("Speed Magnitude", speedMagnitude);
+        
         double headingDeg = driveState.Pose.getRotation().getDegrees();
         double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
