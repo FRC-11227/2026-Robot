@@ -344,7 +344,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (bestTag.isPresent()) {
             limelightAngle = bestTag.get().txnc;
             double timestamp = limelightAngle;
-            if( timestamp != PrevLimelightTimestamp) {
+            if( timestamp != PrevLimelightTimestamp && LimelightHelpers.getTV("") ) {
                 //update gyro setpoint from limelight if new data is available
                 PrevLimelightTimestamp = timestamp;
                 LimelightGyroSetpoint = headingDeg - limelightAngle;
@@ -426,11 +426,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public double limelight_aim_proportional() {
-        Rotation2d target = Rotation2d.fromDegrees( LimelightGyroSetpoint );
-        Rotation2d current = getState().Pose.getRotation();
-        double errorDegs = target.minus(current).getDegrees();
-        double wrappedError = MathUtil.inputModulus( errorDegs, -180, 180 );
-        return -aimController.calculate(wrappedError);
+
+        if(LimelightHelpers.getTV("")){
+            Rotation2d target = Rotation2d.fromDegrees( LimelightGyroSetpoint );
+            Rotation2d current = getState().Pose.getRotation();
+            double errorDegs = target.minus(current).getDegrees();
+            double wrappedError = MathUtil.inputModulus( errorDegs, -180, 180 );
+
+            return -aimController.calculate(wrappedError);
+        }
+        return 0; //if no tags are seen return 0
         
         // double kPFar = 0.02;
         // double kPClose = 0.03;
