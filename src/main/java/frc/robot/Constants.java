@@ -128,7 +128,7 @@ public final class Constants {
 
     public static final double feederErrorGain = 5.0;
 
-    public static final InterpolatingDoubleTreeMap lerpTableOld = InterpolatingDoubleTreeMap.ofEntries(
+    public static final InterpolatingDoubleTreeMap lerpTableOldOld = InterpolatingDoubleTreeMap.ofEntries(
       Map.entry(1.57, 47.0),
       Map.entry(2.76, 55.0),
       Map.entry(3.0, 57.0),
@@ -137,13 +137,24 @@ public final class Constants {
       Map.entry(5.0, 73.0)
     );
 
-    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
+    public static final InterpolatingDoubleTreeMap lerpTableOld = InterpolatingDoubleTreeMap.ofEntries(
       Map.entry(1.01,43.0),
       Map.entry(5.2, 75.0),
       Map.entry(3.7,68.0),
       Map.entry(3.0, 61.0),
       Map.entry(2.23, 55.0),
       Map.entry(1.8, 50.0)
+    );
+
+    public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
+      Map.entry(0.98,56.0),
+      Map.entry(2.0, 67.0),
+      Map.entry(2.47,72.0),
+      Map.entry(2.55, 73.0),
+      Map.entry(3.1, 75.0),
+      Map.entry(3.66, 78.0),
+      Map.entry(4.1, 84.0),
+      Map.entry(4.4, 87.0)
     );
   }
 

@@ -129,6 +129,16 @@ public class RobotContainer {
         //X-lock while X button pressed
         joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
 
+        // Manual shooting speed (For tuning)
+        // joystick.x().whileTrue(
+        //     drivetrain.aimAtHub().andThen(
+        //         Commands.parallel(
+        //             drivetrain.applyRequest(() -> idle),
+        //             shooter.shootSequence()
+        //         )
+        //     )
+        // );
+
         // Reset the field-centric heading on Dpad up press
         joystick.povUp().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
