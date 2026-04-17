@@ -31,7 +31,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -68,6 +68,72 @@
           "type": "named",
           "data": {
             "name": "Shoot 5s"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftEndToNeutral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2ndLeftGather"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2ndGrabReturn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot 1s"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot 1s"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot 1s"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot 1s"
           }
         }
       ]

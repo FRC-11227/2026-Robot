@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -44,6 +45,8 @@ public class ShooterSubsystem extends SubsystemBase {
     final TalonFX m_rightFlywheelFeeder = new TalonFX(CAN.rightFlywheelFeeder, kCanivoreBus);
 
     final VelocityTorqueCurrentFOC m_velocityTorqueRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);
+    //final MotionMagicConfigs shooterVelocityMotionMagicVoltage = new MotionMagicConfigs().withMotionMagicCruiseVelocity(ShooterConstants.flyWheelCruiseVelocity).withMotionMagicAcceleration(ShooterConstants.flyWheelAcceleration).withMotionMagicJerk(ShooterConstants.flyWheelJerk);
+    
 
     final Slot0Configs flywheelSlot0Configs = new Slot0Configs();
     final Slot0Configs feederSlot0Configs = new Slot0Configs();
@@ -71,15 +74,18 @@ public class ShooterSubsystem extends SubsystemBase {
         flywheelSlot0Configs.kS = ShooterConstants.flywheel_right2_kS;
         m_rightFlywheel2.getConfigurator().apply(flywheelSlot0Configs);
 
-        flywheelLimitConfig.StatorCurrentLimit = 120;
+        flywheelLimitConfig.StatorCurrentLimit = 60;
         flywheelLimitConfig.StatorCurrentLimitEnable = true;
-        flywheelLimitConfig.SupplyCurrentLimit = 60;
+        flywheelLimitConfig.SupplyCurrentLimit = 120;
         flywheelLimitConfig.SupplyCurrentLimitEnable = true;
+        
+        // m_leftFlywheel1.getConfigurator().apply(flywheelLimitConfig);
+        // m_leftFlywheel2.getConfigurator().apply(flywheelLimitConfig);
+        // m_rightFlywheel1.getConfigurator().apply(flywheelLimitConfig);
+        // m_rightFlywheel2.getConfigurator().apply(flywheelLimitConfig);
 
-        m_leftFlywheel1.getConfigurator().apply(flywheelLimitConfig);
-        m_leftFlywheel2.getConfigurator().apply(flywheelLimitConfig);
-        m_rightFlywheel1.getConfigurator().apply(flywheelLimitConfig);
-        m_rightFlywheel2.getConfigurator().apply(flywheelLimitConfig);
+        // m_leftFlywheelFeeder.getConfigurator().apply(flywheelLimitConfig);
+        // m_rightFlywheelFeeder.getConfigurator().apply(flywheelLimitConfig);
 
         m_rightFlywheel1.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
         m_rightFlywheel2.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
@@ -109,10 +115,17 @@ public class ShooterSubsystem extends SubsystemBase {
     } 
 
     public void setFlywheelSpeed(double rps) {
+
         m_rightFlywheel1.setControl(m_velocityTorqueRequest.withVelocity(rps));
         m_rightFlywheel2.setControl(m_velocityTorqueRequest.withVelocity(rps));
         m_leftFlywheel1.setControl(m_velocityTorqueRequest.withVelocity(rps));
         m_leftFlywheel2.setControl(m_velocityTorqueRequest.withVelocity(rps));
+
+
+        /*m_rightFlywheel1.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_rightFlywheel2.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheel1.setControl(m_velocityTorqueRequest.withVelocity(rps));
+        m_leftFlywheel2.setControl(m_velocityTorqueRequest.withVelocity(rps));*/
     }
 
     public void setFeederSpeed(double rps) {

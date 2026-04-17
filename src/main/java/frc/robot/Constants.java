@@ -110,8 +110,10 @@ public final class Constants {
     public static final double flywheel_right1_kS = 3.8;
     public static final double flywheel_right2_kS = 3.2;
 
+    
+
     public static final double flywheel_kV = 0.015;
-    public static final double flywheel_kP = 14;
+    public static final double flywheel_kP = 6;
     public static final double flywheel_kI = 0;
     public static final double flywheel_kD = 0;
 
@@ -147,14 +149,14 @@ public final class Constants {
     );
 
     public static final InterpolatingDoubleTreeMap lerpTable = InterpolatingDoubleTreeMap.ofEntries(
-      Map.entry(0.98,56.0),
-      Map.entry(2.0, 67.0),
-      Map.entry(2.47,72.0),
-      Map.entry(2.55, 73.0),
-      Map.entry(3.1, 75.0),
+      Map.entry(0.98,52.0),
+      Map.entry(2.0, 63.0),
+      Map.entry(2.47,67.0),
+      Map.entry(2.55, 68.0),
+      Map.entry(3.1, 76.0),
       Map.entry(3.66, 78.0),
-      Map.entry(4.1, 84.0),
-      Map.entry(4.4, 87.0)
+      Map.entry(4.1, 80.0),
+      Map.entry(4.4, 84.0)
     );
   }
 
