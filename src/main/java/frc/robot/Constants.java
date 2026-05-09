@@ -47,8 +47,9 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    public static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static double SpeedMultiplier = 0.5;
+    public static double MaxSpeed = SpeedMultiplier * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static double MaxAngularRate = SpeedMultiplier * RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
   }
 
   public static class IntakeConstants {
@@ -125,7 +126,7 @@ public final class Constants {
 
     public static final double feederAcceleration = 500;
 
-    public static final double feederSetpointRPS = 60;
+    public static final double feederSetpointRPS = 30;
     public static final double passSpeed = 80;
 
     public static final double feederErrorGain = 5.0;

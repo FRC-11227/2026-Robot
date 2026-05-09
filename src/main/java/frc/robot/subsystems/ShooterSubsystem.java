@@ -189,10 +189,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double determineManualShooterSpeed(DoubleSupplier triggerValue, CommandXboxController controller){
         if(triggerValue.getAsDouble() < 0.2){ //less than 20% threashold
-            return 43.0; //close fixed shot
+            return 5.0; //close fixed shot
         }
         controller.setRumble(RumbleType.kBothRumble, triggerValue.getAsDouble());
-        return (triggerValue.getAsDouble() * 57.0) + 43.0; //between 43 and 100 rps when over threashold
+        return (triggerValue.getAsDouble() * 45.0) + 5.0; //between 5 and 50 rps when over threashold
     }
 
     public Command shootManual(DoubleSupplier triggerValue, CommandXboxController controller){
