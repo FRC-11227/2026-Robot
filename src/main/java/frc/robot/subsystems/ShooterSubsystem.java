@@ -30,6 +30,7 @@ import frc.robot.Constants.CAN;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
+    System.out.println("Max is the best");
     private final CANBus kCanivoreBus = new CANBus("theGoose");
 
     final TalonFX m_leftFlywheelLead = new TalonFX(CAN.leftFlywheelLead, kCanivoreBus);
