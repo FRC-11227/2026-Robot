@@ -20,8 +20,16 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.RawFiducial;
+import frc.robot.match_timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
     final DutyCycleOut m_DutyCycle = new DutyCycleOut(0.0);
 
     private double currentFlywheelSetpoint;
-    private double limelightDistance;
+    public double limelightDistance;
 
     CurrentLimitsConfigs flywheelLimitConfig = new CurrentLimitsConfigs();
 
@@ -189,10 +197,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double determineManualShooterSpeed(DoubleSupplier triggerValue, CommandXboxController controller){
         if(triggerValue.getAsDouble() < 0.2){ //less than 20% threashold
-            return 43.0; //close fixed shot
+            return 5; //close fixed shot
         }
         controller.setRumble(RumbleType.kBothRumble, triggerValue.getAsDouble());
-        return (triggerValue.getAsDouble() * 57.0) + 43.0; //between 43 and 100 rps when over threashold
+        return (triggerValue.getAsDouble() * 45) + 5.0; //between 5 and 50 rps when over threashold
     }
 
     public Command shootManual(DoubleSupplier triggerValue, CommandXboxController controller){
@@ -236,7 +244,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {        
-        updateDistanceToHub();
+        //updateDistanceToHub();
         SmartDashboard.putNumber("LimelightDistance", limelightDistance);
         SmartDashboard.putNumber("FlywheelSetpoint", currentFlywheelSetpoint);
         SmartDashboard.putNumber("LeftFlywheelVelocity", m_leftFlywheel1.getVelocity().getValueAsDouble());

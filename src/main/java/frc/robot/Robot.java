@@ -70,7 +70,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
+        CommandScheduler.getInstance().run();
+
+        m_robotContainer.updateDistanceToHubGlobalPose();
 
         SmartDashboard.putString("Phase", match_timer.get_current_phase().name());
         SmartDashboard.putNumber("Shift Remaining", match_timer.seconds_left_in_shift());

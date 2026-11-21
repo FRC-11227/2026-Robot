@@ -19,11 +19,16 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -42,6 +47,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.match_timer;
 import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
@@ -83,6 +89,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double limelightAngle = 0;
     private double LimelightGyroSetpoint = 0;
     private double PrevLimelightTimestamp = 0;
+
+    
+    AprilTagFieldLayout field = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -333,6 +342,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
         }
 
+        Transform2d tagOffset = new Transform2d(match_timer.is_red ? -0.61 : 0.61, 0.0, new Rotation2d(0));
+        Pose2d hubPose = match_timer.is_red ? (field.getTagPose(10).get().toPose2d().plus(tagOffset)) : (field.getTagPose(26).get().toPose2d().plus(tagOffset));
+        Translation2d hubPoseTranslation = new Translation2d(hubPose.getX(), hubPose.getY());
+        Translation2d robotPoseTranslation = new Translation2d(getState().Pose.getX(), getState().Pose.getY());
+        Rotation2d angle = hubPoseTranslation.minus(robotPoseTranslation).getAngle();
+        LimelightGyroSetpoint = angle.getDegrees();
+
+        SmartDashboard.putNumber("LimelightAngle", limelightAngle);
+
+        /*
         // LimelightHelpers.setPipelineIndex("", 1);
         Set<Integer> targetIds = Set.of(2, 5, 10, 18, 21, 26);
 
@@ -354,7 +373,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 SmartDashboard.putNumber("Gyro setpoint", LimelightGyroSetpoint);
             }
             SmartDashboard.putNumber("LimelightAngle", limelightAngle);
-        }
+        }*/
 
         SmartDashboard.putNumber("AngularVelocity", getState().Speeds.omegaRadiansPerSecond);
     }
@@ -430,15 +449,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public double limelight_aim_proportional() {
 
-        if(LimelightHelpers.getTV("")){
+        //if(LimelightHelpers.getTV("")){
             Rotation2d target = Rotation2d.fromDegrees( LimelightGyroSetpoint );
             Rotation2d current = getState().Pose.getRotation();
             double errorDegs = target.minus(current).getDegrees();
             double wrappedError = MathUtil.inputModulus( errorDegs, -180, 180 );
 
             return -aimController.calculate(wrappedError);
-        }
-        return 0; //if no tags are seen return 0
+        //}
+        //return 0; //if no tags are seen return 0
         
         // double kPFar = 0.02;
         // double kPClose = 0.03;

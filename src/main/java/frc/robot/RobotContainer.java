@@ -11,6 +11,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.EventTrigger;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -49,6 +54,8 @@ public class RobotContainer {
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
+
+    AprilTagFieldLayout field = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     public RobotContainer() {
         SmartDashboard.putNumber("FlywheelSetpoint", 0.0);
@@ -186,5 +193,12 @@ public class RobotContainer {
         //     // Finally idle for the rest of auton
         //     drivetrain.applyRequest(() -> idle)
         // );
+    }
+
+    public void updateDistanceToHubGlobalPose() {
+        Transform2d tagOffset = new Transform2d(match_timer.is_red ? -0.61 : 0.61, 0.0, new Rotation2d(0));
+        Pose2d hubPose = match_timer.is_red ? (field.getTagPose(10).get().toPose2d().plus(tagOffset)) : (field.getTagPose(26).get().toPose2d().plus(tagOffset));
+        Pose2d relativePose = hubPose.relativeTo(drivetrain.getState().Pose);
+        shooter.limelightDistance = Math.sqrt((relativePose.getX()*relativePose.getX()) + (relativePose.getY()*relativePose.getY()));
     }
 }
